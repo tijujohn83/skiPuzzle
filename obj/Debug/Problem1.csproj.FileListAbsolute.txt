@@ -1,7 +1,0 @@
-C:\src\skiPuzzle\obj\Debug\Problem1.csprojAssemblyReference.cache
-C:\src\skiPuzzle\obj\Debug\Problem1.csproj.CoreCompileInputs.cache
-C:\src\skiPuzzle\bin\Debug\Problem1.exe.config
-C:\src\skiPuzzle\bin\Debug\Problem1.exe
-C:\src\skiPuzzle\bin\Debug\Problem1.pdb
-C:\src\skiPuzzle\obj\Debug\Problem1.exe
-C:\src\skiPuzzle\obj\Debug\Problem1.pdb
