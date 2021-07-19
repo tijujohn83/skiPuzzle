@@ -26,7 +26,7 @@ namespace Problem1
                     SolveForPeaks(x, y, ref solution);
                 });
             });
-            
+
             Console.WriteLine(solution.Length + "-" + solution.Depth);
             Console.ReadKey();
 
@@ -88,10 +88,15 @@ namespace Problem1
                 {
                     //longest then steepest
                     if (peak.Length > solution.Length)
-                        solution = peak;
-                    else if (peak.Length == solution.Length)
+                    {
+                        solution.Length = peak.Length;
+                        solution.Depth = peak.Depth;
+                    } else if (peak.Length == solution.Length)
                         if (peak.Depth > solution.Depth)
-                            solution = peak;
+                        {
+                            solution.Length = peak.Length;
+                            solution.Depth = peak.Depth;
+                        }
                 }
             }
 
@@ -149,7 +154,7 @@ namespace Problem1
                 leafCells.Add(new LandScapeCell(x, y, landScape[x, y], hops));
 
 
-            Lookup.TryAdd(LookupKey(x, y, hops),  leafCells);
+            Lookup.TryAdd(LookupKey(x, y, hops), leafCells);
             return leafCells;
         }
 
