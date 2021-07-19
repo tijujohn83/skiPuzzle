@@ -3,7 +3,6 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using _AppDomain = System._AppDomain;
 
 //Answer:15-1422
 namespace Problem1
@@ -26,8 +25,7 @@ namespace Problem1
                     SolveForPeaks(x, y, ref solution);
                 });
             });
-
-
+            
             Console.WriteLine(solution.Length + "-" + solution.Depth);
             Console.ReadKey();
 
