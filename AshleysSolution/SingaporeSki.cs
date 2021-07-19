@@ -150,8 +150,6 @@ namespace SnakeAndLadders
         {
             public int Value;
 
-
-
             public SkiData(int value)
             {
                 Value = value;
