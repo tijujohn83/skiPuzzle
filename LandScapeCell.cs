@@ -17,4 +17,10 @@ namespace Problem1
             LengthFromRoot = lengthFromRoot;
         }
     }
+
+    public struct Cell
+    {
+        public int X;
+        public int Y;
+    }
 }

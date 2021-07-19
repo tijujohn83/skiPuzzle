@@ -11,7 +11,7 @@ namespace Problem1
         private static int[,] _reducedLandScape;
         public static int MinHeight = int.MaxValue;
         public static int MaxHeight = int.MinValue;
-
+        
         public static int[,] ReducedLandScape
         {
             get
@@ -41,12 +41,6 @@ namespace Problem1
                     if (column == SquareMapSide)
                         break;
                 }
-
-                //simplifying matrix
-                //trimming any height lower than the min height as it cannot be used to ski.
-                for (var i = 0; i < SquareMapSide; i++)
-                for (var j = 0; j < SquareMapSide; j++)
-                    _reducedLandScape[i, j] = _reducedLandScape[i, j] - MinHeight;
 
                 return _reducedLandScape;
             }

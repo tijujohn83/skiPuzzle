@@ -7,42 +7,82 @@ namespace Problem1
     class Program
     {
         public static Dictionary<string, IEnumerable<LandScapeCell>> Lookup = new Dictionary<string, IEnumerable<LandScapeCell>>();
+        public static bool?[,] Peaks = new bool?[LandScapeMatrix.SquareMapSide, LandScapeMatrix.SquareMapSide];
 
         static void Main(string[] args)
         {
-            var landScape = LandScapeMatrix.ReducedLandScape;
-            var remainingHeight = LandScapeMatrix.MaxHeight - LandScapeMatrix.MinHeight;
-            
             var solution = new TreeLengthDepth { Depth = 0, Length = 0 };
-            
-            //ToDo: Optimization: instead of going through all cells, save the list of peaks in the initial passes and just iterate those.
-            //solve from all peaks and pick the best
-            while (remainingHeight > 0)
-            {
-                for (var i = 0; i < LandScapeMatrix.SquareMapSide; i++)
-                {
-                    for (var j = 0; j < LandScapeMatrix.SquareMapSide; j++)
-                    {
-                        if (landScape[i, j] == remainingHeight) 
-                        {
-                            var peak = SolveForPeak(i, j);
 
-                            //longest then steepest
-                            if (peak.Length > solution.Length)
-                                solution = peak;
-                            else if (peak.Length == solution.Length)
-                                if (peak.Depth > solution.Depth)
-                                    solution = peak;
-                        }
-                    }
-                }
-
-                remainingHeight--;
-            }
+            for (var i = 0; i < LandScapeMatrix.SquareMapSide; i++)
+            for (var j = 0; j < LandScapeMatrix.SquareMapSide; j++)
+                IsPeak(i, j, ref solution);
 
             Console.WriteLine(solution.Length + "-" + solution.Depth);
             Console.ReadKey();
 
+        }
+
+        private static bool IsPeak(int x, int y, ref TreeLengthDepth solution)
+        {
+            if (Peaks[x, y].HasValue) return Peaks[x, y].Value;
+
+            var current = LandScapeMatrix.ReducedLandScape[x, y];
+
+            int left;
+            if (x - 1 < 0)
+                left = current;
+            else
+            {
+                left = LandScapeMatrix.ReducedLandScape[x - 1, y];
+                if (current > left) Peaks[x - 1, y] = false;
+            }
+
+            int right;
+            if (x + 1 >= LandScapeMatrix.SquareMapSide)
+                right = current;
+            else
+            {
+                right = LandScapeMatrix.ReducedLandScape[x + 1, y];
+                if (current > right) Peaks[x + 1, y] = false;
+            }
+
+            int top;
+            if (y - 1 < 0)
+                top = current;
+            else
+            {
+                top = LandScapeMatrix.ReducedLandScape[x, y - 1];
+                if (current > top) Peaks[x, y - 1] = false;
+            }
+
+            int bottom;
+            if (y + 1 >= LandScapeMatrix.SquareMapSide)
+                bottom = current;
+            else
+            {
+                bottom = LandScapeMatrix.ReducedLandScape[x, y + 1];
+                if (current > bottom) Peaks[x, y + 1] = false;
+            }
+
+            Peaks[x, y] = current >= left
+                          && current >= right
+                          && current >= top
+                          && current >= bottom;
+
+
+            if (Peaks[x, y].Value)
+            {
+                var peak = SolveForPeak(x, y);
+
+                //longest then steepest
+                if (peak.Length > solution.Length)
+                    solution = peak;
+                else if (peak.Length == solution.Length)
+                    if (peak.Depth > solution.Depth)
+                        solution = peak;
+            }
+
+            return Peaks[x, y].Value;
         }
 
         private static TreeLengthDepth SolveForPeak(int x, int y)
@@ -59,8 +99,7 @@ namespace Problem1
                 {
                     solution.Length = leafCell.LengthFromRoot;
                     solution.Depth = landScape[x, y] - leafCell.Z;
-                }
-                else if (leafCell.LengthFromRoot == solution.Length)
+                } else if (leafCell.LengthFromRoot == solution.Length)
                     if (landScape[x, y] - leafCell.Z > solution.Depth)
                     {
                         solution.Depth = landScape[x, y] - leafCell.Z;
@@ -69,7 +108,6 @@ namespace Problem1
 
             return solution;
         }
-
         
         private static IEnumerable<LandScapeCell> ReturnAllLeaves(int x, int y, int hops)
         {
@@ -118,6 +156,7 @@ namespace Problem1
             Lookup[x.ToString() + y.ToString() + hops.ToString()] = leafCells;
             return leafCells;
         }
+        
     }
 }
 
