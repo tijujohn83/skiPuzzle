@@ -42,7 +42,7 @@ namespace Problem1
 
         private static TreeLengthDepth SolveForPeak(int x, int y)
         {
-            var area = LandScapeMatrix.ReducedLandScape;
+            var landScape = LandScapeMatrix.ReducedLandScape;
             var solution = new TreeLengthDepth { Depth = 0, Length = 0 };
 
             var leafCells = ReturnLeaves(x, y, 1);
@@ -53,12 +53,12 @@ namespace Problem1
                 if (leafCell.LengthFromRoot > solution.Length)
                 {
                     solution.Length = leafCell.LengthFromRoot;
-                    solution.Depth = area[x, y] - leafCell.Z;
+                    solution.Depth = landScape[x, y] - leafCell.Z;
                 }
                 else if (leafCell.LengthFromRoot == solution.Length)
-                    if (area[x, y] - leafCell.Z > solution.Depth)
+                    if (landScape[x, y] - leafCell.Z > solution.Depth)
                     {
-                        solution.Depth = area[x, y] - leafCell.Z;
+                        solution.Depth = landScape[x, y] - leafCell.Z;
                     }
             }
 
