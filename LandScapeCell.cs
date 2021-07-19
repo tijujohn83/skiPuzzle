@@ -1,7 +1,7 @@
 ﻿
 namespace Problem1
 {
-    public class LandScapeCell
+    public struct LandScapeCell
     {
         public int X;
         public int Y;
