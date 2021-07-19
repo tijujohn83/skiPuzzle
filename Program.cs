@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 //Answer:15-1422
@@ -100,19 +101,9 @@ namespace Problem1
 
             var leafCells = ReturnAllLeaves(x, y, 1);
 
-            //longest then steepest
-            foreach (var leafCell in leafCells)
-            {
-                if (leafCell.LengthFromRoot > solution.Length)
-                {
-                    solution.Length = leafCell.LengthFromRoot;
-                    solution.Depth = landScape[x, y] - leafCell.Z;
-                } else if (leafCell.LengthFromRoot == solution.Length)
-                    if (landScape[x, y] - leafCell.Z > solution.Depth)
-                    {
-                        solution.Depth = landScape[x, y] - leafCell.Z;
-                    }
-            }
+            var solutionCell = leafCells.OrderByDescending(cell => cell.LengthFromRoot).ThenBy(cell => cell.Z).FirstOrDefault();
+            solution.Length = solutionCell.LengthFromRoot;
+            solution.Depth = landScape[x, y] - solutionCell.Z;
 
             return solution;
         }
