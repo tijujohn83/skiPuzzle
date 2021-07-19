@@ -9,6 +9,7 @@ namespace Problem1
 {
     class Program
     {
+        private static readonly object LockObj = new object();
         public static ConcurrentDictionary<string, IEnumerable<LandScapeCell>> Lookup = new ConcurrentDictionary<string, IEnumerable<LandScapeCell>>();
         public static bool?[,] Peaks = new bool?[LandScapeMatrix.SquareMapSide, LandScapeMatrix.SquareMapSide];
 
@@ -83,12 +84,15 @@ namespace Problem1
             {
                 var peak = SolveForPeak(x, y);
 
-                //longest then steepest
-                if (peak.Length > solution.Length)
-                    solution = peak;
-                else if (peak.Length == solution.Length)
-                    if (peak.Depth > solution.Depth)
+                lock (LockObj)
+                {
+                    //longest then steepest
+                    if (peak.Length > solution.Length)
                         solution = peak;
+                    else if (peak.Length == solution.Length)
+                        if (peak.Depth > solution.Depth)
+                            solution = peak;
+                }
             }
 
         }
