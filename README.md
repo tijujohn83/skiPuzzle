@@ -23,5 +23,6 @@ There is another path that is also length five: 8-5-3-2-1. However the tie is br
 
 Your challenge is to write a program in your favorite programming language to find the longest (and then steepest) path on this map specified in the format above. It’s 1000x1000 in size, and all the numbers on it are between 0 and 1500. (source=LandScape.txt included in the repo. The data does not cointain the size (1000, 1000) of the matrix, but only matrix data)
 
+Dump your output as concatenation of the length of the longest path with the largest drop, and the size of the drop. So in the simple example above length=5, drop=8, outupt 5-8 
 
 Good luck and have fun!
