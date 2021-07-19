@@ -8,16 +8,16 @@ namespace Problem1
         static void Main(string[] args)
         {
             var landScape = LandScapeMatrix.ReducedLandScape;
-            var steepestPossibleJump = LandScapeMatrix.MaxHeight - LandScapeMatrix.MinHeight;
+            var remainingHeight = LandScapeMatrix.MaxHeight - LandScapeMatrix.MinHeight;
             var solution = new TreeLengthDepth { Depth = 0, Length = 0 };
             //later: instead of going through all lengths, save the list of peaks in the initial passes.
-            while (steepestPossibleJump > 0)
+            while (remainingHeight > 0)
             {
                 for (var i = 0; i < LandScapeMatrix.SquareMapSide; i++)
                 {
                     for (var j = 0; j < LandScapeMatrix.SquareMapSide; j++)
                     {
-                        if (landScape[i, j] == steepestPossibleJump) //run for only all available peaks
+                        if (landScape[i, j] == remainingHeight) //run for only all available peaks
                         {
                             var peak = SolveForPeak(i, j);
 
@@ -30,7 +30,7 @@ namespace Problem1
                     }
                 }
 
-                steepestPossibleJump--;
+                remainingHeight--;
             }
 
             Console.WriteLine(solution.Length + "-" + solution.Depth);
