@@ -10,17 +10,19 @@ namespace Problem1
             var landScape = LandScapeMatrix.ReducedLandScape;
             var remainingHeight = LandScapeMatrix.MaxHeight - LandScapeMatrix.MinHeight;
             var solution = new TreeLengthDepth { Depth = 0, Length = 0 };
-            //later: instead of going through all lengths, save the list of peaks in the initial passes.
+            
+            //ToDo: Optimization: instead of going through all cells, save the list of peaks in the initial passes and just iterate those.
             while (remainingHeight > 0)
             {
                 for (var i = 0; i < LandScapeMatrix.SquareMapSide; i++)
                 {
                     for (var j = 0; j < LandScapeMatrix.SquareMapSide; j++)
                     {
-                        if (landScape[i, j] == remainingHeight) //run for only all available peaks
+                        if (landScape[i, j] == remainingHeight) 
                         {
                             var peak = SolveForPeak(i, j);
 
+                            //longest then steepest
                             if (peak.Length > solution.Length)
                                 solution = peak;
                             else if (peak.Length == solution.Length)
@@ -43,19 +45,20 @@ namespace Problem1
             var area = LandScapeMatrix.ReducedLandScape;
             var solution = new TreeLengthDepth { Depth = 0, Length = 0 };
 
-            var leaves = ReturnLeaves(x, y, 1);
+            var leafCells = ReturnLeaves(x, y, 1);
 
-            foreach (var leaf in leaves)
+            //longest then steepest
+            foreach (var leafCell in leafCells)
             {
-                if (leaf.LengthFromRoot > solution.Length)
+                if (leafCell.LengthFromRoot > solution.Length)
                 {
-                    solution.Length = leaf.LengthFromRoot;
-                    solution.Depth = area[x, y] - leaf.Z;
+                    solution.Length = leafCell.LengthFromRoot;
+                    solution.Depth = area[x, y] - leafCell.Z;
                 }
-                else if (leaf.LengthFromRoot == solution.Length)
-                    if (area[x, y] - leaf.Z > solution.Depth)
+                else if (leafCell.LengthFromRoot == solution.Length)
+                    if (area[x, y] - leafCell.Z > solution.Depth)
                     {
-                        solution.Depth = area[x, y] - leaf.Z;
+                        solution.Depth = area[x, y] - leafCell.Z;
                     }
             }
 
@@ -64,43 +67,43 @@ namespace Problem1
 
         private static IEnumerable<LandScapeCell> ReturnLeaves(int x, int y, int length)
         {
-            var area = LandScapeMatrix.ReducedLandScape;
+            var landScape = LandScapeMatrix.ReducedLandScape;
 
-            var leaves = new List<LandScapeCell>();
+            var leafCells = new List<LandScapeCell>();
             var addParentCell = true;
 
             //left
-            if (x > 0 && area[x - 1, y] < area[x, y])
+            if (x > 0 && landScape[x - 1, y] < landScape[x, y])
             {
-                leaves.AddRange(ReturnLeaves(x - 1, y, length + 1));
+                leafCells.AddRange(ReturnLeaves(x - 1, y, length + 1));
                 addParentCell = false;
             }
 
             //right
-            if (x < LandScapeMatrix.SquareMapSide - 1 && area[x + 1, y] < area[x, y])
+            if (x < LandScapeMatrix.SquareMapSide - 1 && landScape[x + 1, y] < landScape[x, y])
             {
-                leaves.AddRange(ReturnLeaves(x + 1, y, length + 1));
+                leafCells.AddRange(ReturnLeaves(x + 1, y, length + 1));
                 addParentCell = false;
             }
 
             //top
-            if (y > 0 && (area[x, y - 1] < area[x, y]))
+            if (y > 0 && (landScape[x, y - 1] < landScape[x, y]))
             {
-                leaves.AddRange(ReturnLeaves(x, y - 1, length + 1));
+                leafCells.AddRange(ReturnLeaves(x, y - 1, length + 1));
                 addParentCell = false;
             }
 
             //bottom
-            if (y < LandScapeMatrix.SquareMapSide - 1 && area[x, y + 1] < area[x, y])
+            if (y < LandScapeMatrix.SquareMapSide - 1 && landScape[x, y + 1] < landScape[x, y])
             {
-                leaves.AddRange(ReturnLeaves(x, y + 1, length + 1));
+                leafCells.AddRange(ReturnLeaves(x, y + 1, length + 1));
                 addParentCell = false;
             }
 
             if (addParentCell)
-                leaves.Add(new LandScapeCell(x, y, area[x, y], length));
+                leafCells.Add(new LandScapeCell(x, y, landScape[x, y], length));
 
-            return leaves;
+            return leafCells;
         }
     }
 }
