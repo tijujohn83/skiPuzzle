@@ -1,21 +1,30 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 //Answer:15-1422
 namespace Problem1
 {
     class Program
     {
-        public static Dictionary<string, IEnumerable<LandScapeCell>> Lookup = new Dictionary<string, IEnumerable<LandScapeCell>>();
+        public static ConcurrentDictionary<string, IEnumerable<LandScapeCell>> Lookup = new ConcurrentDictionary<string, IEnumerable<LandScapeCell>>();
         public static bool?[,] Peaks = new bool?[LandScapeMatrix.SquareMapSide, LandScapeMatrix.SquareMapSide];
 
         static void Main(string[] args)
         {
             var solution = new TreeLengthDepth { Depth = 0, Length = 0 };
 
-            for (var i = 0; i < LandScapeMatrix.SquareMapSide; i++)
-            for (var j = 0; j < LandScapeMatrix.SquareMapSide; j++)
-                SolveForPeaks(i, j, ref solution);
+            Parallel.For(0, LandScapeMatrix.SquareMapSide, i =>
+            {
+                Parallel.For(0, LandScapeMatrix.SquareMapSide, j =>
+                {
+                    var x = i;
+                    var y = j;
+                    SolveForPeaks(x, y, ref solution);
+                });
+            });
+
 
             Console.WriteLine(solution.Length + "-" + solution.Depth);
             Console.ReadKey();
@@ -107,7 +116,7 @@ namespace Problem1
 
             return solution;
         }
-        
+
         private static IEnumerable<LandScapeCell> ReturnAllLeaves(int x, int y, int hops)
         {
             if (Lookup.TryGetValue(x.ToString() + y.ToString() + hops.ToString(), out var cache))
@@ -152,10 +161,10 @@ namespace Problem1
                 leafCells.Add(new LandScapeCell(x, y, landScape[x, y], hops));
 
 
-            Lookup[x.ToString() + y.ToString() + hops.ToString()] = leafCells;
+            Lookup.TryAdd(x.ToString() + y.ToString() + hops.ToString(),  leafCells);
             return leafCells;
         }
-        
+
     }
 }
 
