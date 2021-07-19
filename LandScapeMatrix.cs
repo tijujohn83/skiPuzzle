@@ -8,29 +8,29 @@ namespace Problem1
         //input assumes area represented as a square matrix of the size below
         public const int SquareMapSide = 1000;
 
-        private static int[,] _reducedLandScape;
+        private static int[,] _landScape;
         public static int MinHeight = int.MaxValue;
         public static int MaxHeight = int.MinValue;
         
-        public static int[,] ReducedLandScape
+        public static int[,] LandScape
         {
             get
             {
-                if (_reducedLandScape != null) return _reducedLandScape;
+                if (_landScape != null) return _landScape;
 
                 var input = File.ReadAllText(@"..\..\LandScape.txt");
-                _reducedLandScape = new int[SquareMapSide, SquareMapSide];
+                _landScape = new int[SquareMapSide, SquareMapSide];
                 int row = 0, column = 0;
 
                 foreach (var item in input.Split(','))
                 {
-                    _reducedLandScape[row, column] = Convert.ToInt32(item);
+                    _landScape[row, column] = Convert.ToInt32(item);
 
-                    if (_reducedLandScape[row, column] < MinHeight)
-                        MinHeight = _reducedLandScape[row, column];
+                    if (_landScape[row, column] < MinHeight)
+                        MinHeight = _landScape[row, column];
 
-                    if (_reducedLandScape[row, column] > MaxHeight)
-                        MaxHeight = _reducedLandScape[row, column];
+                    if (_landScape[row, column] > MaxHeight)
+                        MaxHeight = _landScape[row, column];
 
                     row++;
                     if (row == SquareMapSide)
@@ -42,7 +42,7 @@ namespace Problem1
                         break;
                 }
 
-                return _reducedLandScape;
+                return _landScape;
             }
         }
 

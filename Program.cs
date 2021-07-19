@@ -35,14 +35,14 @@ namespace Problem1
         {
             if (Peaks[x, y].HasValue) return;
 
-            var current = LandScapeMatrix.ReducedLandScape[x, y];
+            var current = LandScapeMatrix.LandScape[x, y];
 
             int left;
             if (x - 1 < 0)
                 left = current;
             else
             {
-                left = LandScapeMatrix.ReducedLandScape[x - 1, y];
+                left = LandScapeMatrix.LandScape[x - 1, y];
                 if (current > left) Peaks[x - 1, y] = false;
             }
 
@@ -51,7 +51,7 @@ namespace Problem1
                 right = current;
             else
             {
-                right = LandScapeMatrix.ReducedLandScape[x + 1, y];
+                right = LandScapeMatrix.LandScape[x + 1, y];
                 if (current > right) Peaks[x + 1, y] = false;
             }
 
@@ -60,7 +60,7 @@ namespace Problem1
                 top = current;
             else
             {
-                top = LandScapeMatrix.ReducedLandScape[x, y - 1];
+                top = LandScapeMatrix.LandScape[x, y - 1];
                 if (current > top) Peaks[x, y - 1] = false;
             }
 
@@ -69,7 +69,7 @@ namespace Problem1
                 bottom = current;
             else
             {
-                bottom = LandScapeMatrix.ReducedLandScape[x, y + 1];
+                bottom = LandScapeMatrix.LandScape[x, y + 1];
                 if (current > bottom) Peaks[x, y + 1] = false;
             }
 
@@ -95,7 +95,7 @@ namespace Problem1
 
         private static TreeLengthDepth SolveForPeak(int x, int y)
         {
-            var landScape = LandScapeMatrix.ReducedLandScape;
+            var landScape = LandScapeMatrix.LandScape;
             var solution = new TreeLengthDepth { Depth = 0, Length = 0 };
 
             var leafCells = ReturnAllLeaves(x, y, 1);
@@ -114,7 +114,7 @@ namespace Problem1
                 return cache;
             }
 
-            var landScape = LandScapeMatrix.ReducedLandScape;
+            var landScape = LandScapeMatrix.LandScape;
 
             var leafCells = new List<LandScapeCell>();
             var isLeafCell = true;
