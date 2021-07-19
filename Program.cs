@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using _AppDomain = System._AppDomain;
 
 //Answer:15-1422
 namespace Problem1
@@ -110,7 +111,7 @@ namespace Problem1
 
         private static IEnumerable<LandScapeCell> ReturnAllLeaves(int x, int y, int hops)
         {
-            if (Lookup.TryGetValue(x.ToString() + y.ToString() + hops.ToString(), out var cache))
+            if (Lookup.TryGetValue(LookupKey(x, y, hops), out var cache))
             {
                 return cache;
             }
@@ -152,10 +153,14 @@ namespace Problem1
                 leafCells.Add(new LandScapeCell(x, y, landScape[x, y], hops));
 
 
-            Lookup.TryAdd(x.ToString() + y.ToString() + hops.ToString(),  leafCells);
+            Lookup.TryAdd(LookupKey(x, y, hops),  leafCells);
             return leafCells;
         }
 
+        public static string LookupKey(int x, int y, int z)
+        {
+            return x + "-" + y + "-" + z;
+        }
     }
 }
 
