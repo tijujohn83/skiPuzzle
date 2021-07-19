@@ -161,6 +161,10 @@ namespace Problem1
         public static string LookupKey(int x, int y, int z)
         {
             return x + "-" + y + "-" + z;
+
+            //don't know why hops is important in the key? results are different
+            //return x + "-" + y;
+
         }
     }
 }
