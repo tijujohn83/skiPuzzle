@@ -15,16 +15,16 @@ namespace Problem1
 
             for (var i = 0; i < LandScapeMatrix.SquareMapSide; i++)
             for (var j = 0; j < LandScapeMatrix.SquareMapSide; j++)
-                IsPeak(i, j, ref solution);
+                SolveForPeaks(i, j, ref solution);
 
             Console.WriteLine(solution.Length + "-" + solution.Depth);
             Console.ReadKey();
 
         }
 
-        private static bool IsPeak(int x, int y, ref TreeLengthDepth solution)
+        private static void SolveForPeaks(int x, int y, ref TreeLengthDepth solution)
         {
-            if (Peaks[x, y].HasValue) return Peaks[x, y].Value;
+            if (Peaks[x, y].HasValue) return;
 
             var current = LandScapeMatrix.ReducedLandScape[x, y];
 
@@ -82,7 +82,6 @@ namespace Problem1
                         solution = peak;
             }
 
-            return Peaks[x, y].Value;
         }
 
         private static TreeLengthDepth SolveForPeak(int x, int y)
