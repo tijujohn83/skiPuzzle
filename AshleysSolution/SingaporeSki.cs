@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 
 //http://geeks.redmart.com/2015/01/07/skiing-in-singapore-a-coding-diversion/
 namespace SnakeAndLadders
@@ -12,21 +9,21 @@ namespace SnakeAndLadders
     {
         public int Size { get; private set; }
 
-        public LinkedList<SkiData>[]  adjacencyList;
+        public LinkedList<SkiData>[]  AdjacencyList;
         public SingaporeSki(int size)
         {
             Size = size;
 
-            adjacencyList = new LinkedList<SkiData>[size*size +1];
+            AdjacencyList = new LinkedList<SkiData>[size*size +1];
             for (int i = 1; i <= size*size; i++)
             {
-                adjacencyList[i] = new LinkedList<SkiData>();
+                AdjacencyList[i] = new LinkedList<SkiData>();
             }
         }
 
         public void AddEdgeAtBegin(SkiData startVertex, SkiData endVertex)
         {
-            adjacencyList[startVertex.Value].AddFirst(endVertex);
+            AdjacencyList[startVertex.Value].AddFirst(endVertex);
         }
         public void CreateAdjacencyList(int[][] input)
         {
@@ -68,7 +65,7 @@ namespace SnakeAndLadders
             for (int i = 1; i <= Size*Size; i++)
             {
                   Queue<int> queue = new Queue<int>();
-                if (adjacencyList[i] != null)
+                if (AdjacencyList[i] != null)
                 {
                     level[i] = Math.Max(1, level[i]); //setting Level =1;
                     queue.Enqueue(i); //enqueue root
@@ -128,7 +125,7 @@ namespace SnakeAndLadders
             int max = 1;
             if (!(visited[node]))
             {
-                foreach (var list in adjacencyList[node])
+                foreach (var list in AdjacencyList[node])
                 {
                     if (!(visited[list.Value]))
                     {

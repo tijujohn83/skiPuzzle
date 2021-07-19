@@ -42,6 +42,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AshleysSolution\GraphThoeryTest.cs" />
+    <Compile Include="AshleysSolution\SingaporeSki.cs" />
     <Compile Include="LandScapeMatrix.cs" />
     <Compile Include="LandScapeCell.cs" />
     <Compile Include="Program.cs" />

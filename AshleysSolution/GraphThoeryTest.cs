@@ -1,21 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Text;
 using System.Threading.Tasks;
-using NUnit;
-using NUnit.Framework;
+
 
 namespace SnakeAndLadders
 {
-    [TestFixture]
+   
     class GraphThoeryTest
     {
-       
-
-        [Test]
-        public void TestSki()
+       public void TestSki()
         {
             SingaporeSki obj = new SingaporeSki(4);
             int[][] input = new int[4][];
@@ -41,7 +34,7 @@ namespace SnakeAndLadders
             
         }
 
-        [Test]
+       
         public void TestskiOnline()
         {
             var task = GetData("http://s3-ap-southeast-1.amazonaws.com/geeks.redmart.com/coding-problems/map.txt");
