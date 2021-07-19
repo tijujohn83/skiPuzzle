@@ -96,15 +96,9 @@ namespace Problem1
         private static TreeLengthDepth SolveForPeak(int x, int y)
         {
             var landScape = LandScapeMatrix.LandScape;
-            var solution = new TreeLengthDepth { Depth = 0, Length = 0 };
-
             var leafCells = ReturnAllLeaves(x, y, 1);
-
             var solutionCell = leafCells.OrderByDescending(cell => cell.LengthFromRoot).ThenBy(cell => cell.Z).FirstOrDefault();
-            solution.Length = solutionCell.LengthFromRoot;
-            solution.Depth = landScape[x, y] - solutionCell.Z;
-
-            return solution;
+            return new TreeLengthDepth { Depth = landScape[x, y] - solutionCell.Z, Length = solutionCell.LengthFromRoot };
         }
 
         private static IEnumerable<LandScapeCell> ReturnAllLeaves(int x, int y, int hops)
@@ -134,7 +128,7 @@ namespace Problem1
             }
 
             //top
-            if (y > 0 && (landScape[x, y - 1] < landScape[x, y]))
+            if (y > 0 && landScape[x, y - 1] < landScape[x, y])
             {
                 leafCells.AddRange(ReturnAllLeaves(x, y - 1, hops + 1));
                 isLeafCell = false;
