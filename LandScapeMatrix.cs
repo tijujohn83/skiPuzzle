@@ -18,22 +18,24 @@ namespace Problem1
 
                 var input = File.ReadAllText(@"..\..\LandScape.txt");
                 _landScape = new LandScapeCell[SquareMapSide, SquareMapSide];
-                int row = 0, column = 0;
+                int row = 0, col = 0;
 
                 foreach (var item in input.Split(','))
                 {
-                    _landScape[row, column] = new LandScapeCell
+                    _landScape[row, col] = new LandScapeCell
                     {
+                        X = row,
+                        Y = col,
                         Z = Convert.ToInt32(item)
                     };
-
-                    row++;
-                    if (row == SquareMapSide)
+                   
+                    col++;
+                    if (col == SquareMapSide)
                     {
-                        column++;
-                        row = 0;
+                        row++;
+                        col = 0;
                     }
-                    if (column == SquareMapSide)
+                    if (row == SquareMapSide)
                         break;
                 }
 
