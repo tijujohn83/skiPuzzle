@@ -108,7 +108,7 @@ namespace Problem1
                     SolveForPeaksDfs(x, y, ref solution);
                 }
             }
-
+            solution.Path.Reverse();
             return solution;
         }
 
@@ -270,11 +270,13 @@ namespace Problem1
                     {
                         solution.Length = peak.Length;
                         solution.Depth = peak.Depth;
+                        solution.Path = peak.Path;
                     } else if (peak.Length == solution.Length)
                         if (peak.Depth > solution.Depth)
                         {
                             solution.Length = peak.Length;
                             solution.Depth = peak.Depth;
+                            solution.Path = peak.Path;
                         }
                 }
             }
@@ -293,7 +295,7 @@ namespace Problem1
         {
             var landScape = LandScapeMatrix.Cells;
             var solutionCell = Dfs(x, y, 1);
-            return new TreeLengthDepth { Depth = landScape[x, y].Z - solutionCell.Z, Length = solutionCell.LengthFromPeak };
+            return new TreeLengthDepth { Depth = landScape[x, y].Z - solutionCell.Z, Length = solutionCell.LengthFromPeak, Path = solutionCell.Path.ToList() };
         }
 
         private static LandScapeCell Dfs(int x, int y, int cellsTraversed)
@@ -337,6 +339,7 @@ namespace Problem1
             }
 
             solutionCell.LengthFromPeak = cellsTraversed;
+            solutionCell.Path = new List<LandScapeCell> {solutionCell};
             return solutionCell;
         }
 
