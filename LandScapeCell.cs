@@ -4,13 +4,18 @@ using System.Diagnostics;
 namespace Problem1
 {
     [DebuggerDisplay("{X}, {Y}, {Z}, {LengthFromPeak}, {IsPeak.hasValue ? IsPeak.Value.ToString() : string.Empty}")]
-    public struct LandScapeCell
+    public class LandScapeCell
     {
         public int X;
         public int Y;
         public int Z;
         public int LengthFromPeak;
         public bool? IsPeak;
+
+        public LandScapeCell()
+        {
+            
+        }
 
         public LandScapeCell(int x, int y, int z, int lengthFromPeak)
         {
