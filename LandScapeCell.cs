@@ -6,21 +6,18 @@ namespace Problem1
         public int X;
         public int Y;
         public int Z;
-        public int LengthFromRoot;
+        public int LengthFromPeak;
+        public bool? IsPeak;
 
 
-        public LandScapeCell(int x, int y, int z, int lengthFromRoot)
+        public LandScapeCell(int x, int y, int z, int lengthFromPeak)
         {
             X = x;
             Y = y;
             Z = z;
-            LengthFromRoot = lengthFromRoot;
+            LengthFromPeak = lengthFromPeak;
+            IsPeak = null;
         }
     }
 
-    public struct Cell
-    {
-        public int X;
-        public int Y;
-    }
 }

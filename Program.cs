@@ -11,7 +11,6 @@ namespace Problem1
     {
         private static readonly object LockObj = new object();
         public static ConcurrentDictionary<string, IEnumerable<LandScapeCell>> Lookup = new ConcurrentDictionary<string, IEnumerable<LandScapeCell>>();
-        public static bool?[,] Peaks = new bool?[LandScapeMatrix.SquareMapSide, LandScapeMatrix.SquareMapSide];
 
         static void Main(string[] args)
         {
@@ -34,17 +33,17 @@ namespace Problem1
 
         private static void SolveForPeaks(int x, int y, ref TreeLengthDepth solution)
         {
-            if (Peaks[x, y].HasValue) return;
+            if (LandScapeMatrix.Cells[x, y].IsPeak.HasValue) return;
 
-            var current = LandScapeMatrix.LandScape[x, y];
+            var current = LandScapeMatrix.Cells[x, y].Z;
 
             int left;
             if (x - 1 < 0)
                 left = current;
             else
             {
-                left = LandScapeMatrix.LandScape[x - 1, y];
-                if (current > left) Peaks[x - 1, y] = false;
+                left = LandScapeMatrix.Cells[x - 1, y].Z;
+                if (current > left) LandScapeMatrix.Cells[x - 1, y].IsPeak = false;
             }
 
             int right;
@@ -52,8 +51,8 @@ namespace Problem1
                 right = current;
             else
             {
-                right = LandScapeMatrix.LandScape[x + 1, y];
-                if (current > right) Peaks[x + 1, y] = false;
+                right = LandScapeMatrix.Cells[x + 1, y].Z;
+                if (current > right) LandScapeMatrix.Cells[x + 1, y].IsPeak = false;
             }
 
             int top;
@@ -61,8 +60,8 @@ namespace Problem1
                 top = current;
             else
             {
-                top = LandScapeMatrix.LandScape[x, y - 1];
-                if (current > top) Peaks[x, y - 1] = false;
+                top = LandScapeMatrix.Cells[x, y - 1].Z;
+                if (current > top) LandScapeMatrix.Cells[x, y - 1].IsPeak = false;
             }
 
             int bottom;
@@ -70,17 +69,17 @@ namespace Problem1
                 bottom = current;
             else
             {
-                bottom = LandScapeMatrix.LandScape[x, y + 1];
-                if (current > bottom) Peaks[x, y + 1] = false;
+                bottom = LandScapeMatrix.Cells[x, y + 1].Z;
+                if (current > bottom) LandScapeMatrix.Cells[x, y + 1].IsPeak = false;
             }
 
-            Peaks[x, y] = current >= left
-                          && current >= right
-                          && current >= top
-                          && current >= bottom;
+            LandScapeMatrix.Cells[x, y].IsPeak = current >= left
+                                              && current >= right
+                                              && current >= top
+                                              && current >= bottom;
 
 
-            if (Peaks[x, y].Value)
+            if (LandScapeMatrix.Cells[x, y].IsPeak.Value)
             {
                 var peak = SolveForPeak(x, y);
 
@@ -104,10 +103,10 @@ namespace Problem1
 
         private static TreeLengthDepth SolveForPeak(int x, int y)
         {
-            var landScape = LandScapeMatrix.LandScape;
+            var landScape = LandScapeMatrix.Cells;
             var leafCells = ReturnAllLeaves(x, y, 1);
-            var solutionCell = leafCells.OrderByDescending(cell => cell.LengthFromRoot).ThenBy(cell => cell.Z).FirstOrDefault();
-            return new TreeLengthDepth { Depth = landScape[x, y] - solutionCell.Z, Length = solutionCell.LengthFromRoot };
+            var solutionCell = leafCells.OrderByDescending(cell => cell.LengthFromPeak).ThenBy(cell => cell.Z).FirstOrDefault();
+            return new TreeLengthDepth { Depth = landScape[x, y].Z - solutionCell.Z, Length = solutionCell.LengthFromPeak };
         }
 
         private static IEnumerable<LandScapeCell> ReturnAllLeaves(int x, int y, int hops)
@@ -117,41 +116,41 @@ namespace Problem1
                 return cache;
             }
 
-            var landScape = LandScapeMatrix.LandScape;
+            var landScape = LandScapeMatrix.Cells;
 
             var leafCells = new List<LandScapeCell>();
             var isLeafCell = true;
 
             //left
-            if (x > 0 && landScape[x - 1, y] < landScape[x, y])
+            if (x > 0 && landScape[x - 1, y].Z < landScape[x, y].Z)
             {
                 leafCells.AddRange(ReturnAllLeaves(x - 1, y, hops + 1));
                 isLeafCell = false;
             }
 
             //right
-            if (x < LandScapeMatrix.SquareMapSide - 1 && landScape[x + 1, y] < landScape[x, y])
+            if (x < LandScapeMatrix.SquareMapSide - 1 && landScape[x + 1, y].Z < landScape[x, y].Z)
             {
                 leafCells.AddRange(ReturnAllLeaves(x + 1, y, hops + 1));
                 isLeafCell = false;
             }
 
             //top
-            if (y > 0 && landScape[x, y - 1] < landScape[x, y])
+            if (y > 0 && landScape[x, y - 1].Z < landScape[x, y].Z)
             {
                 leafCells.AddRange(ReturnAllLeaves(x, y - 1, hops + 1));
                 isLeafCell = false;
             }
 
             //bottom
-            if (y < LandScapeMatrix.SquareMapSide - 1 && landScape[x, y + 1] < landScape[x, y])
+            if (y < LandScapeMatrix.SquareMapSide - 1 && landScape[x, y + 1].Z < landScape[x, y].Z)
             {
                 leafCells.AddRange(ReturnAllLeaves(x, y + 1, hops + 1));
                 isLeafCell = false;
             }
 
             if (isLeafCell)
-                leafCells.Add(new LandScapeCell(x, y, landScape[x, y], hops));
+                leafCells.Add(new LandScapeCell(x, y, landScape[x, y].Z, hops));
 
 
             Lookup.TryAdd(LookupKey(x, y, hops), leafCells);
@@ -161,10 +160,6 @@ namespace Problem1
         public static string LookupKey(int x, int y, int z)
         {
             return x + "-" + y + "-" + z;
-
-            //don't know why hops is important in the key? results are different
-            //return x + "-" + y;
-
         }
     }
 }
