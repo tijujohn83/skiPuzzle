@@ -32,7 +32,7 @@ namespace Problem1
             File.WriteAllText(@"..\..\solution.txt", result, Encoding.UTF8);
         }
 
-        private static void SolutionString(TreeLengthDepth solution, StringBuilder sb)
+        private static void SolutionString(Solution solution, StringBuilder sb)
         {
             sb.Append($"Cells Traversed = {solution.Path.Count}, Fall = {solution.Depth}")
                 .AppendLine();
@@ -110,9 +110,9 @@ namespace Problem1
 
         }
 
-        private static TreeLengthDepth Dfs()
+        private static Solution Dfs()
         {
-            var solution = new TreeLengthDepth { Depth = 0, Length = 0, Path = new List<LandScapeCell>() };
+            var solution = new Solution { Depth = 0, Length = 0, Path = new List<LandScapeCell>() };
 
             for (var x = 0; x < LandScapeMatrix.SquareMapSide; x++)
             {
@@ -125,9 +125,9 @@ namespace Problem1
             return solution;
         }
 
-        private static TreeLengthDepth NonDfs()
+        private static Solution NonDfs()
         {
-            var solution = new TreeLengthDepth { Depth = 0, Length = 0, Path = new List<LandScapeCell>() };
+            var solution = new Solution { Depth = 0, Length = 0, Path = new List<LandScapeCell>() };
 
             Parallel.For(0, LandScapeMatrix.SquareMapSide, x =>
             {
@@ -140,7 +140,7 @@ namespace Problem1
             return solution;
         }
 
-        private static void SolveForPeaks(int x, int y, TreeLengthDepth solution)
+        private static void SolveForPeaks(int x, int y, Solution solution)
         {
             var currentCell = LandScapeMatrix.Cells[x, y];
             if (currentCell.IsPeak.HasValue) return;
@@ -184,9 +184,9 @@ namespace Problem1
             }
 
             LandScapeMatrix.Cells[x, y].IsPeak = current >= left
-                                                 && current >= right
-                                                 && current >= top
-                                                 && current >= bottom;
+                                              && current >= right
+                                              && current >= top
+                                              && current >= bottom;
 
 
             if (LandScapeMatrix.Cells[x, y].IsPeak.Value)
@@ -214,11 +214,12 @@ namespace Problem1
 
         }
 
-        private static void SolveForPeaksDfs(int x, int y, TreeLengthDepth solution)
+        private static void SolveForPeaksDfs(int x, int y, Solution solution)
         {
-            if (LandScapeMatrix.Cells[x, y].IsPeak.HasValue) return;
+            var currentCell = LandScapeMatrix.Cells[x, y];
+            if (currentCell.IsPeak.HasValue) return;
 
-            var current = LandScapeMatrix.Cells[x, y].Z;
+            var current = currentCell.Z;
 
             int left;
             if (y - 1 < 0)
@@ -286,19 +287,19 @@ namespace Problem1
 
         }
 
-        private static TreeLengthDepth SolveForPeak(int x, int y)
+        private static Solution SolveForPeak(int x, int y)
         {
             var landScape = LandScapeMatrix.Cells;
             var leafCells = ReturnAllLeaves(x, y, 1);
             var solutionCell = leafCells.OrderByDescending(cell => cell.CellsTraversed).ThenBy(cell => cell.Z).FirstOrDefault();
-            return new TreeLengthDepth { Depth = landScape[x, y].Z - solutionCell.Z, Length = solutionCell.CellsTraversed, Path = solutionCell.Path.ToList() };
+            return new Solution { Depth = landScape[x, y].Z - solutionCell.Z, Length = solutionCell.CellsTraversed, Path = solutionCell.Path.ToList() };
         }
 
-        private static TreeLengthDepth SolveForPeakDfs(int x, int y)
+        private static Solution SolveForPeakDfs(int x, int y)
         {
             var landScape = LandScapeMatrix.Cells;
             var solutionCell = Dfs(x, y, 1);
-            return new TreeLengthDepth { Depth = landScape[x, y].Z - solutionCell.Z, Length = solutionCell.CellsTraversed, Path = solutionCell.Path.ToList() };
+            return new Solution { Depth = landScape[x, y].Z - solutionCell.Z, Length = solutionCell.CellsTraversed, Path = solutionCell.Path.ToList() };
         }
 
         private static LandScapeCell Dfs(int x, int y, int cellsTraversed)

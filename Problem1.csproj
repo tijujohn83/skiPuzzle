@@ -62,7 +62,7 @@
     <Compile Include="LandScapeMatrix.cs" />
     <Compile Include="LandScapeCell.cs" />
     <Compile Include="Program.cs" />
-    <Compile Include="TreeLengthDepth.cs" />
+    <Compile Include="Solution.cs" />
     <Compile Include="Utilities.cs" />
   </ItemGroup>
   <ItemGroup>
