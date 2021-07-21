@@ -13,7 +13,6 @@ namespace Problem1
     class Program
     {
         private static readonly object LockObj = new object();
-        public static ConcurrentDictionary<string, IEnumerable<LandScapeCell>> Lookup = new ConcurrentDictionary<string, IEnumerable<LandScapeCell>>();
         public const int Space = 2;
 
         static void Main(string[] args)
@@ -107,12 +106,10 @@ namespace Problem1
 
         private static TreeLengthDepth Dfs(TreeLengthDepth solution)
         {
-            for (var i = 0; i < LandScapeMatrix.SquareMapSide; i++)
+            for (var x = 0; x < LandScapeMatrix.SquareMapSide; x++)
             {
-                for (var j = 0; j < LandScapeMatrix.SquareMapSide; j++)
+                for (var y = 0; y < LandScapeMatrix.SquareMapSide; y++)
                 {
-                    var x = i;
-                    var y = j;
                     SolveForPeaksDfs(x, y, ref solution);
                 }
             }
@@ -122,35 +119,23 @@ namespace Problem1
 
         private static TreeLengthDepth NonDfs(TreeLengthDepth solution)
         {
-            //Parallel.For(0, LandScapeMatrix.SquareMapSide, i =>
-            //{
-            //    Parallel.For(0, LandScapeMatrix.SquareMapSide, j =>
-            //    {
-            //        var x = i;
-            //        var y = j;
-            //        SolveForPeaks(x, y, ref solution);
-            //    });
-            //});
-            //return solution;
-
-            for (var i = 0; i < LandScapeMatrix.SquareMapSide; i++)
+            Parallel.For(0, LandScapeMatrix.SquareMapSide, x =>
             {
-                for (var j = 0; j < LandScapeMatrix.SquareMapSide; j++)
+                Parallel.For(0, LandScapeMatrix.SquareMapSide, y =>
                 {
-                    var x = i;
-                    var y = j;
                     SolveForPeaks(x, y, ref solution);
-                }
-            }
-
+                });
+            });
             solution.Path.Reverse();
             return solution;
         }
 
         private static void SolveForPeaks(int x, int y, ref TreeLengthDepth solution)
         {
-            if (LandScapeMatrix.Cells[x, y].IsPeak.HasValue) return;
-            var current = LandScapeMatrix.Cells[x, y].Z;
+            var currentCell = LandScapeMatrix.Cells[x, y];
+            if (currentCell.IsPeak.HasValue) return;
+
+            var current = currentCell.Z;
 
             int left;
             if (y - 1 < 0)
@@ -415,10 +400,6 @@ namespace Problem1
             return leafCells;
         }
 
-        public static string LookupKey(int x, int y, int z)
-        {
-            return x + "-" + y + "-" + z;
-        }
     }
 }
 

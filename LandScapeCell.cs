@@ -26,7 +26,7 @@ namespace Problem1
             Y = y;
             Z = z;
             LengthFromPeak = lengthFromPeak;
-            IsPeak = null;
+            //IsPeak = null;
         }
 
         public void CopyFrom(LandScapeCell source)
