@@ -1,17 +1,16 @@
 ﻿
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Runtime.Remoting.Messaging;
 
 namespace Problem1
 {
-    [DebuggerDisplay("{X}, {Y}, {Z}, {LengthFromPeak}, {IsPeak.hasValue ? IsPeak.Value.ToString() : null}")]
+    [DebuggerDisplay("{X}, {Y}, {Z}, {CellsTraversed}, {IsPeak.hasValue ? IsPeak.Value.ToString() : null}")]
     public class LandScapeCell
     {
         public int X;
         public int Y;
         public int Z;
-        public int LengthFromPeak;
+        public int CellsTraversed;
         public bool? IsPeak;
         public List<LandScapeCell> Path;
 
@@ -20,22 +19,24 @@ namespace Problem1
             
         }
 
-        public LandScapeCell(int x, int y, int z, int lengthFromPeak)
+        public LandScapeCell(int x, int y, int z, int cellsTraversed)
         {
             X = x;
             Y = y;
             Z = z;
-            LengthFromPeak = lengthFromPeak;
+            CellsTraversed = cellsTraversed;
             //IsPeak = null;
         }
 
-        public void CopyFrom(LandScapeCell source)
+        public void UpdateSolution(LandScapeCell newSolution)
         {
-            X = source.X;
-            Y = source.Y;
-            Z = source.Z;
-            LengthFromPeak = source.LengthFromPeak;
-            IsPeak = source.IsPeak;
+            X = newSolution.X;
+            Y = newSolution.Y;
+            Z = newSolution.Z;
+            CellsTraversed = newSolution.CellsTraversed;
+            IsPeak = newSolution.IsPeak;
+            Path = Path ?? new List<LandScapeCell>();
+            Path.AddRange(newSolution.Path);
         }
     }
 

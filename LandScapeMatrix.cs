@@ -19,7 +19,7 @@ namespace Problem1
                 {
                     if (_landScape != null) return _landScape;
 
-                    var input = File.ReadAllText(@"..\..\LandScape1.txt");
+                    var input = File.ReadAllText(@"..\..\LandScape4.txt");
                     _landScape = new LandScapeCell[SquareMapSide, SquareMapSide];
                     int row = 0, col = 0;
 

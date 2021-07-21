@@ -16,8 +16,8 @@ namespace Problem1
         {
             var solution = new TreeLengthDepth { Depth = 0, Length = 0 };
 
-            //solution = NonDfs(solution);
-            solution = Dfs(solution);
+            solution = NonDfs(solution);
+            //solution = Dfs(solution);
             PrintSolution(solution);
         }
 
@@ -278,69 +278,72 @@ namespace Problem1
         {
             var landScape = LandScapeMatrix.Cells;
             var leafCells = ReturnAllLeaves(x, y, 1);
-            var solutionCell = leafCells.OrderByDescending(cell => cell.LengthFromPeak).ThenBy(cell => cell.Z).FirstOrDefault();
-            return new TreeLengthDepth { Depth = landScape[x, y].Z - solutionCell.Z, Length = solutionCell.LengthFromPeak, Path = solutionCell.Path.ToList() };
+            var solutionCell = leafCells.OrderByDescending(cell => cell.CellsTraversed).ThenBy(cell => cell.Z).FirstOrDefault();
+            return new TreeLengthDepth { Depth = landScape[x, y].Z - solutionCell.Z, Length = solutionCell.CellsTraversed, Path = solutionCell.Path.ToList() };
         }
 
         private static TreeLengthDepth SolveForPeakDfs(int x, int y)
         {
             var landScape = LandScapeMatrix.Cells;
             var solutionCell = Dfs(x, y, 1);
-            return new TreeLengthDepth { Depth = landScape[x, y].Z - solutionCell.Z, Length = solutionCell.LengthFromPeak, Path = solutionCell.Path.ToList() };
+            return new TreeLengthDepth { Depth = landScape[x, y].Z - solutionCell.Z, Length = solutionCell.CellsTraversed, Path = solutionCell.Path.ToList() };
         }
 
         private static LandScapeCell Dfs(int x, int y, int cellsTraversed)
         {
-            void Update(LandScapeCell newSol, LandScapeCell currSol)
-            {
-                if (newSol.LengthFromPeak > currSol.LengthFromPeak)
-                {
-                    currSol = newSol;
-                } else if (newSol.LengthFromPeak == currSol.LengthFromPeak && newSol.Z < currSol.Z)
-                {
-                    currSol = newSol;
-                }
-            }
 
             var landScape = LandScapeMatrix.Cells;
             var solutionCell = LandScapeMatrix.Cells[x, y];
+            solutionCell.CellsTraversed = cellsTraversed;
+            solutionCell.Path = solutionCell.Path ?? new List<LandScapeCell>{solutionCell};
+
+            LandScapeCell FindSolution(LandScapeCell newSol, LandScapeCell currSol)
+            {
+                if (newSol.CellsTraversed > currSol.CellsTraversed)
+                {
+                    newSol.Path.Add(solutionCell);
+                    return newSol;
+                }
+
+                if (newSol.CellsTraversed == currSol.CellsTraversed && newSol.Z < currSol.Z)
+                { 
+                    newSol.Path.Add(solutionCell);
+                    return newSol;
+                }
+
+                return currSol;
+            }
+            
 
             //left
             if (y > 0 && landScape[x, y - 1].Z < landScape[x, y].Z)
             {
-                Update(Dfs(x, y - 1, cellsTraversed + 1), solutionCell);
+                solutionCell = FindSolution(Dfs(x, y - 1, cellsTraversed + 1), solutionCell);
             }
 
             //right
             if (y < LandScapeMatrix.SquareMapSide - 1 && landScape[x, y + 1].Z < landScape[x, y].Z)
             {
-                Update(Dfs(x, y + 1, cellsTraversed + 1), solutionCell);
+                solutionCell = FindSolution(Dfs(x, y + 1, cellsTraversed + 1), solutionCell);
             }
 
             //top
             if (x > 0 && landScape[x - 1, y].Z < landScape[x, y].Z)
             {
-                Update(Dfs(x - 1, y, cellsTraversed + 1), solutionCell);
+                solutionCell = FindSolution(Dfs(x - 1, y, cellsTraversed + 1), solutionCell);
             }
 
             //bottom
             if (x < LandScapeMatrix.SquareMapSide - 1 && landScape[x + 1, y].Z < landScape[x, y].Z)
             {
-                Update(Dfs(x + 1, y, cellsTraversed + 1), solutionCell);
+                solutionCell = FindSolution(Dfs(x + 1, y, cellsTraversed + 1), solutionCell);
             }
 
-            solutionCell.LengthFromPeak = cellsTraversed;
-            solutionCell.Path = new List<LandScapeCell> { solutionCell };
             return solutionCell;
         }
 
         private static IEnumerable<LandScapeCell> ReturnAllLeaves(int x, int y, int cellsTraversed)
         {
-            //if (Lookup.TryGetValue(LookupKey(x, y, cellsTraversed), out var cache))
-            //{
-            //    return cache;
-            //}
-
             var landScape = LandScapeMatrix.Cells;
             var currentCell = LandScapeMatrix.Cells[x, y];
             var leafCells = new List<LandScapeCell>();
@@ -394,7 +397,6 @@ namespace Problem1
                 leafCells.Add(new LandScapeCell(x, y, landScape[x, y].Z, cellsTraversed) { Path = new List<LandScapeCell> { currentCell } });
 
 
-            //Lookup.TryAdd(LookupKey(x, y, cellsTraversed), leafCells);
             return leafCells;
         }
 
