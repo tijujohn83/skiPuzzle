@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Runtime.Remoting.Messaging;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -19,8 +16,8 @@ namespace Problem1
         {
             var solution = new TreeLengthDepth { Depth = 0, Length = 0 };
 
-            solution = NonDfs(solution);
-            //solution = Dfs(solution);
+            //solution = NonDfs(solution);
+            solution = Dfs(solution);
             PrintSolution(solution);
         }
 
@@ -49,7 +46,8 @@ namespace Problem1
             {
                 for (var y = 0; y < LandScapeMatrix.SquareMapSide; y++)
                 {
-                    builder.Append(LandScapeMatrix.Cells[x, y].IsPeak.Value ? LandScapeMatrix.Cells[x, y].Z.ToString().PadLeft(Space).PadRight(Space + 2) : "●".PadLeft(Space).PadRight(Space + 2));
+                    var isPeak = LandScapeMatrix.Cells[x, y].IsPeak;
+                    builder.Append(isPeak != null && isPeak.Value ? LandScapeMatrix.Cells[x, y].Z.ToString().PadLeft(Space).PadRight(Space + 2) : "●".PadLeft(Space).PadRight(Space + 2));
                 }
                 builder.AppendLine();
             }
@@ -297,10 +295,10 @@ namespace Problem1
             {
                 if (newSol.LengthFromPeak > currSol.LengthFromPeak)
                 {
-                    currSol.CopyFrom(newSol);
+                    currSol = newSol;
                 } else if (newSol.LengthFromPeak == currSol.LengthFromPeak && newSol.Z < currSol.Z)
                 {
-                    currSol.CopyFrom(newSol);
+                    currSol = newSol;
                 }
             }
 
