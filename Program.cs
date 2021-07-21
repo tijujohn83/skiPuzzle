@@ -14,45 +14,54 @@ namespace Problem1
 
         static void Main(string[] args)
         {
-            var solution = new TreeLengthDepth { Depth = 0, Length = 0 };
+            var sb = new StringBuilder();
 
-            solution = NonDfs(solution);
-            //solution = Dfs(solution);
-            PrintSolution(solution);
+            sb.AppendLine(nameof(NonDfs));
+            var solution = NonDfs();
+            SolutionString(solution, sb);
+
+            sb.AppendLine(nameof(Dfs));
+            solution = Dfs();
+            SolutionString(solution, sb);
+
+            PrintToFile(sb.ToString());
         }
 
-        private static void PrintSolution(TreeLengthDepth solution)
+        private static void PrintToFile(string result)
         {
-            var builder = new StringBuilder();
+            File.WriteAllText(@"..\..\solution.txt", result, Encoding.UTF8);
+        }
 
-            builder.Append($"Cells Traversed = {solution.Path.Count}, Fall = {solution.Depth}")
+        private static void SolutionString(TreeLengthDepth solution, StringBuilder sb)
+        {
+            sb.Append($"Cells Traversed = {solution.Path.Count}, Fall = {solution.Depth}")
                 .AppendLine();
 
-            builder.Append("Cells = ").Append(string.Join("🡢", solution.Path.Select(node => $"[{node.X}, {node.Y}]"))).AppendLine();
-            builder.Append("Heights = ").Append(string.Join("🡢", solution.Path.Select(node => LandScapeMatrix.Cells[node.X, node.Y].Z))).AppendLine().AppendLine();
+            sb.Append("Cells = ").Append(string.Join("🡢", solution.Path.Select(node => $"[{node.X}, {node.Y}]"))).AppendLine();
+            sb.Append("Heights = ").Append(string.Join("🡢", solution.Path.Select(node => LandScapeMatrix.Cells[node.X, node.Y].Z))).AppendLine().AppendLine();
 
-            builder.AppendLine("Input");
+            sb.AppendLine("Input");
             for (var x = 0; x < LandScapeMatrix.SquareMapSide; x++)
             {
                 for (var y = 0; y < LandScapeMatrix.SquareMapSide; y++)
                 {
-                    builder.Append($"{LandScapeMatrix.Cells[x, y].Z}".PadLeft(Space).PadRight(Space + 2));
+                    sb.Append($"{LandScapeMatrix.Cells[x, y].Z}".PadLeft(Space).PadRight(Space + 2));
                 }
-                builder.AppendLine();
+                sb.AppendLine();
             }
 
-            builder.AppendLine().AppendLine("Peaks");
+            sb.AppendLine().AppendLine("Peaks");
             for (var x = 0; x < LandScapeMatrix.SquareMapSide; x++)
             {
                 for (var y = 0; y < LandScapeMatrix.SquareMapSide; y++)
                 {
                     var isPeak = LandScapeMatrix.Cells[x, y].IsPeak;
-                    builder.Append(isPeak != null && isPeak.Value ? LandScapeMatrix.Cells[x, y].Z.ToString().PadLeft(Space).PadRight(Space + 2) : "●".PadLeft(Space).PadRight(Space + 2));
+                    sb.Append(isPeak != null && isPeak.Value ? LandScapeMatrix.Cells[x, y].Z.ToString().PadLeft(Space).PadRight(Space + 2) : "●".PadLeft(Space).PadRight(Space + 2));
                 }
-                builder.AppendLine();
+                sb.AppendLine();
             }
 
-            builder.AppendLine().AppendLine("Solution");
+            sb.AppendLine().AppendLine("Solution");
 
             for (var x = 0; x < LandScapeMatrix.SquareMapSide; x++)
             {
@@ -71,64 +80,67 @@ namespace Problem1
                             var next = solution.Path[nodeIndex + 1];
 
                             if (next.X == node.X && next.Y < node.Y)
-                                builder.Append($"{start}🡠".PadLeft(Space + 1).PadRight(Space + 3));
+                                sb.Append($"{start}🡠".PadLeft(Space + 1).PadRight(Space + 3));
                             else if (next.X == node.X && next.Y > node.Y)
-                                builder.Append($"{start}🡢".PadLeft(Space + 1).PadRight(Space + 3));
+                                sb.Append($"{start}🡢".PadLeft(Space + 1).PadRight(Space + 3));
                             else if (next.X < node.X && next.Y == node.Y)
-                                builder.Append($"{start}🡡".PadLeft(Space + 1).PadRight(Space + 3));
+                                sb.Append($"{start}🡡".PadLeft(Space + 1).PadRight(Space + 3));
                             else if (next.X > node.X && next.Y == node.Y)
-                                builder.Append($"{start}🡣".PadLeft(Space + 1).PadRight(Space + 3));
+                                sb.Append($"{start}🡣".PadLeft(Space + 1).PadRight(Space + 3));
                             else if (next.X < node.X && next.Y < node.Y)
-                                builder.Append($"{start}🡤".PadLeft(Space + 1).PadRight(Space + 3));
+                                sb.Append($"{start}🡤".PadLeft(Space + 1).PadRight(Space + 3));
                             else if (next.X < node.X && next.Y > node.Y)
-                                builder.Append($"{start}🡥".PadLeft(Space + 1).PadRight(Space + 3));
+                                sb.Append($"{start}🡥".PadLeft(Space + 1).PadRight(Space + 3));
                             else if (next.X > node.X && next.Y > node.Y)
-                                builder.Append($"{start}🡦".PadLeft(Space + 1).PadRight(Space + 3));
+                                sb.Append($"{start}🡦".PadLeft(Space + 1).PadRight(Space + 3));
                             else if (next.X > node.X && next.Y < node.Y)
-                                builder.Append($"{start}🡧".PadLeft(Space + 1).PadRight(Space + 3));
+                                sb.Append($"{start}🡧".PadLeft(Space + 1).PadRight(Space + 3));
                         } else
                         {
-                            builder.Append("@".PadLeft(Space).PadRight(Space + 2));
+                            sb.Append("@".PadLeft(Space).PadRight(Space + 2));
                         }
                     } else
                     {
-                        builder.Append("●".PadLeft(Space).PadRight(Space + 2));
+                        sb.Append("●".PadLeft(Space).PadRight(Space + 2));
                     }
                 }
-                builder.AppendLine();
+                sb.AppendLine();
             }
-            builder.AppendLine();
+            sb.AppendLine("------------------------------------------------------------------------------------------------------");
 
-            File.WriteAllText(@"..\..\solution.txt", builder.ToString(), Encoding.UTF8);
         }
 
-        private static TreeLengthDepth Dfs(TreeLengthDepth solution)
+        private static TreeLengthDepth Dfs()
         {
+            var solution = new TreeLengthDepth { Depth = 0, Length = 0, Path = new List<LandScapeCell>() };
+
             for (var x = 0; x < LandScapeMatrix.SquareMapSide; x++)
             {
                 for (var y = 0; y < LandScapeMatrix.SquareMapSide; y++)
                 {
-                    SolveForPeaksDfs(x, y, ref solution);
+                    SolveForPeaksDfs(x, y, solution);
                 }
             }
             solution.Path.Reverse();
             return solution;
         }
 
-        private static TreeLengthDepth NonDfs(TreeLengthDepth solution)
+        private static TreeLengthDepth NonDfs()
         {
+            var solution = new TreeLengthDepth { Depth = 0, Length = 0, Path = new List<LandScapeCell>() };
+
             Parallel.For(0, LandScapeMatrix.SquareMapSide, x =>
             {
                 Parallel.For(0, LandScapeMatrix.SquareMapSide, y =>
                 {
-                    SolveForPeaks(x, y, ref solution);
+                    SolveForPeaks(x, y, solution);
                 });
             });
             solution.Path.Reverse();
             return solution;
         }
 
-        private static void SolveForPeaks(int x, int y, ref TreeLengthDepth solution)
+        private static void SolveForPeaks(int x, int y, TreeLengthDepth solution)
         {
             var currentCell = LandScapeMatrix.Cells[x, y];
             if (currentCell.IsPeak.HasValue) return;
@@ -202,7 +214,7 @@ namespace Problem1
 
         }
 
-        private static void SolveForPeaksDfs(int x, int y, ref TreeLengthDepth solution)
+        private static void SolveForPeaksDfs(int x, int y, TreeLengthDepth solution)
         {
             if (LandScapeMatrix.Cells[x, y].IsPeak.HasValue) return;
 
