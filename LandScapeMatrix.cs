@@ -6,7 +6,7 @@ namespace Problem1
     public static class LandScapeMatrix
     {
         //input assumes area represented as a square matrix of the size below
-        public const int SquareMapSide = 1000;
+        public const int SquareMapSide = 4;
 
         private static LandScapeCell[,] _landScape;
         
@@ -16,7 +16,7 @@ namespace Problem1
             {
                 if (_landScape != null) return _landScape;
 
-                var input = File.ReadAllText(@"..\..\LandScape.txt");
+                var input = File.ReadAllText(@"..\..\LandScape1.txt");
                 _landScape = new LandScapeCell[SquareMapSide, SquareMapSide];
                 int row = 0, col = 0;
 

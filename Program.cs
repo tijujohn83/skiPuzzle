@@ -33,19 +33,29 @@ namespace Problem1
                 .AppendLine();
 
             builder.Append("Cells = ").Append(string.Join("🡢", solution.Path.Select(node => $"[{node.X}, {node.Y}]"))).AppendLine();
-            builder.Append("Heights = ").Append(string.Join("🡢", solution.Path.Select(node => LandScapeMatrix.Cells[node.X, node.Y].Z))).AppendLine();
-            
+            builder.Append("Heights = ").Append(string.Join("🡢", solution.Path.Select(node => LandScapeMatrix.Cells[node.X, node.Y].Z))).AppendLine().AppendLine();
 
-            //for (var x = 0; x < LandScapeMatrix.SquareMapSide; x++)
-            //{
-            //    for (var y = 0; y < LandScapeMatrix.SquareMapSide; y++)
-            //    {
-            //        builder.Append($"{LandScapeMatrix.Cells[x, y].Z}".PadLeft(Space).PadRight(Space));
-            //    }
-            //    builder.AppendLine();
-            //}
+            builder.AppendLine("Input");
+            for (var x = 0; x < LandScapeMatrix.SquareMapSide; x++)
+            {
+                for (var y = 0; y < LandScapeMatrix.SquareMapSide; y++)
+                {
+                    builder.Append($"{LandScapeMatrix.Cells[x, y].Z}".PadLeft(Space).PadRight(Space + 2));
+                }
+                builder.AppendLine();
+            }
 
-            builder.AppendLine("Solution\n");
+            builder.AppendLine().AppendLine("Peaks");
+            for (var x = 0; x < LandScapeMatrix.SquareMapSide; x++)
+            {
+                for (var y = 0; y < LandScapeMatrix.SquareMapSide; y++)
+                {
+                    builder.Append(LandScapeMatrix.Cells[x, y].IsPeak.Value ? LandScapeMatrix.Cells[x, y].Z.ToString().PadLeft(Space).PadRight(Space + 2) : "●".PadLeft(Space).PadRight(Space + 2));
+                }
+                builder.AppendLine();
+            }
+
+            builder.AppendLine().AppendLine("Solution");
 
             for (var x = 0; x < LandScapeMatrix.SquareMapSide; x++)
             {
@@ -79,13 +89,11 @@ namespace Problem1
                                 builder.Append($"{start}🡦".PadLeft(Space + 1).PadRight(Space + 3));
                             else if (next.X > node.X && next.Y < node.Y)
                                 builder.Append($"{start}🡧".PadLeft(Space + 1).PadRight(Space + 3));
-                        }
-                        else
+                        } else
                         {
                             builder.Append("@".PadLeft(Space).PadRight(Space + 2));
                         }
-                    }
-                    else
+                    } else
                     {
                         builder.Append("●".PadLeft(Space).PadRight(Space + 2));
                     }
@@ -145,39 +153,39 @@ namespace Problem1
             var current = LandScapeMatrix.Cells[x, y].Z;
 
             int left;
-            if (x - 1 < 0)
+            if (y - 1 < 0)
                 left = current;
             else
             {
-                left = LandScapeMatrix.Cells[x - 1, y].Z;
-                if (current > left) LandScapeMatrix.Cells[x - 1, y].IsPeak = false;
+                left = LandScapeMatrix.Cells[x, y - 1].Z;
+                if (current > left) LandScapeMatrix.Cells[x, y - 1].IsPeak = false;
             }
 
             int right;
-            if (x + 1 >= LandScapeMatrix.SquareMapSide)
+            if (y + 1 >= LandScapeMatrix.SquareMapSide)
                 right = current;
             else
             {
-                right = LandScapeMatrix.Cells[x + 1, y].Z;
-                if (current > right) LandScapeMatrix.Cells[x + 1, y].IsPeak = false;
+                right = LandScapeMatrix.Cells[x, y + 1].Z;
+                if (current > right) LandScapeMatrix.Cells[x, y + 1].IsPeak = false;
             }
 
             int top;
-            if (y - 1 < 0)
+            if (x - 1 < 0)
                 top = current;
             else
             {
-                top = LandScapeMatrix.Cells[x, y - 1].Z;
-                if (current > top) LandScapeMatrix.Cells[x, y - 1].IsPeak = false;
+                top = LandScapeMatrix.Cells[x - 1, y].Z;
+                if (current > top) LandScapeMatrix.Cells[x - 1, y].IsPeak = false;
             }
 
             int bottom;
-            if (y + 1 >= LandScapeMatrix.SquareMapSide)
+            if (x + 1 >= LandScapeMatrix.SquareMapSide)
                 bottom = current;
             else
             {
-                bottom = LandScapeMatrix.Cells[x, y + 1].Z;
-                if (current > bottom) LandScapeMatrix.Cells[x, y + 1].IsPeak = false;
+                bottom = LandScapeMatrix.Cells[x + 1, y].Z;
+                if (current > bottom) LandScapeMatrix.Cells[x + 1, y].IsPeak = false;
             }
 
             LandScapeMatrix.Cells[x, y].IsPeak = current >= left
@@ -218,39 +226,39 @@ namespace Problem1
             var current = LandScapeMatrix.Cells[x, y].Z;
 
             int left;
-            if (x - 1 < 0)
+            if (y - 1 < 0)
                 left = current;
             else
             {
-                left = LandScapeMatrix.Cells[x - 1, y].Z;
-                if (current > left) LandScapeMatrix.Cells[x - 1, y].IsPeak = false;
+                left = LandScapeMatrix.Cells[x, y - 1].Z;
+                if (current > left) LandScapeMatrix.Cells[x, y - 1].IsPeak = false;
             }
 
             int right;
-            if (x + 1 >= LandScapeMatrix.SquareMapSide)
+            if (y + 1 >= LandScapeMatrix.SquareMapSide)
                 right = current;
             else
             {
-                right = LandScapeMatrix.Cells[x + 1, y].Z;
-                if (current > right) LandScapeMatrix.Cells[x + 1, y].IsPeak = false;
+                right = LandScapeMatrix.Cells[x, y + 1].Z;
+                if (current > right) LandScapeMatrix.Cells[x, y + 1].IsPeak = false;
             }
 
             int top;
-            if (y - 1 < 0)
+            if (x - 1 < 0)
                 top = current;
             else
             {
-                top = LandScapeMatrix.Cells[x, y - 1].Z;
-                if (current > top) LandScapeMatrix.Cells[x, y - 1].IsPeak = false;
+                top = LandScapeMatrix.Cells[x - 1, y].Z;
+                if (current > top) LandScapeMatrix.Cells[x - 1, y].IsPeak = false;
             }
 
             int bottom;
-            if (y + 1 >= LandScapeMatrix.SquareMapSide)
+            if (x + 1 >= LandScapeMatrix.SquareMapSide)
                 bottom = current;
             else
             {
-                bottom = LandScapeMatrix.Cells[x, y + 1].Z;
-                if (current > bottom) LandScapeMatrix.Cells[x, y + 1].IsPeak = false;
+                bottom = LandScapeMatrix.Cells[x + 1, y].Z;
+                if (current > bottom) LandScapeMatrix.Cells[x + 1, y].IsPeak = false;
             }
 
             LandScapeMatrix.Cells[x, y].IsPeak = current >= left
@@ -315,40 +323,40 @@ namespace Problem1
             var solutionCell = LandScapeMatrix.Cells[x, y];
 
             //left
-            if (x > 0 && landScape[x - 1, y].Z < landScape[x, y].Z)
-            {
-                Update(Dfs(x - 1, y, cellsTraversed + 1), solutionCell);
-            }
-
-            //right
-            if (x < LandScapeMatrix.SquareMapSide - 1 && landScape[x + 1, y].Z < landScape[x, y].Z)
-            {
-                Update(Dfs(x + 1, y, cellsTraversed + 1), solutionCell);
-            }
-
-            //top
             if (y > 0 && landScape[x, y - 1].Z < landScape[x, y].Z)
             {
                 Update(Dfs(x, y - 1, cellsTraversed + 1), solutionCell);
             }
 
-            //bottom
+            //right
             if (y < LandScapeMatrix.SquareMapSide - 1 && landScape[x, y + 1].Z < landScape[x, y].Z)
             {
                 Update(Dfs(x, y + 1, cellsTraversed + 1), solutionCell);
             }
 
+            //top
+            if (x > 0 && landScape[x - 1, y].Z < landScape[x, y].Z)
+            {
+                Update(Dfs(x - 1, y, cellsTraversed + 1), solutionCell);
+            }
+
+            //bottom
+            if (x < LandScapeMatrix.SquareMapSide - 1 && landScape[x + 1, y].Z < landScape[x, y].Z)
+            {
+                Update(Dfs(x + 1, y, cellsTraversed + 1), solutionCell);
+            }
+
             solutionCell.LengthFromPeak = cellsTraversed;
-            solutionCell.Path = new List<LandScapeCell> {solutionCell};
+            solutionCell.Path = new List<LandScapeCell> { solutionCell };
             return solutionCell;
         }
 
         private static IEnumerable<LandScapeCell> ReturnAllLeaves(int x, int y, int cellsTraversed)
         {
-            if (Lookup.TryGetValue(LookupKey(x, y, cellsTraversed), out var cache))
-            {
-                return cache;
-            }
+            //if (Lookup.TryGetValue(LookupKey(x, y, cellsTraversed), out var cache))
+            //{
+            //    return cache;
+            //}
 
             var landScape = LandScapeMatrix.Cells;
             var currentCell = LandScapeMatrix.Cells[x, y];
@@ -356,28 +364,6 @@ namespace Problem1
             var isLeafCell = true;
 
             //left
-            if (x > 0 && landScape[x - 1, y].Z < landScape[x, y].Z)
-            {
-                leafCells.AddRange(ReturnAllLeaves(x - 1, y, cellsTraversed + 1).Select(leaf =>
-                {
-                    leaf.Path.Add(currentCell);
-                    return leaf;
-                }));
-                isLeafCell = false;
-            }
-
-            //right
-            if (x < LandScapeMatrix.SquareMapSide - 1 && landScape[x + 1, y].Z < landScape[x, y].Z)
-            {
-                leafCells.AddRange(ReturnAllLeaves(x + 1, y, cellsTraversed + 1).Select(leaf =>
-                {
-                    leaf.Path.Add(currentCell);
-                    return leaf;
-                }));
-                isLeafCell = false;
-            }
-
-            //top
             if (y > 0 && landScape[x, y - 1].Z < landScape[x, y].Z)
             {
                 leafCells.AddRange(ReturnAllLeaves(x, y - 1, cellsTraversed + 1).Select(leaf =>
@@ -388,10 +374,32 @@ namespace Problem1
                 isLeafCell = false;
             }
 
-            //bottom
+            //right
             if (y < LandScapeMatrix.SquareMapSide - 1 && landScape[x, y + 1].Z < landScape[x, y].Z)
             {
                 leafCells.AddRange(ReturnAllLeaves(x, y + 1, cellsTraversed + 1).Select(leaf =>
+                {
+                    leaf.Path.Add(currentCell);
+                    return leaf;
+                }));
+                isLeafCell = false;
+            }
+
+            //top
+            if (x > 0 && landScape[x - 1, y].Z < landScape[x, y].Z)
+            {
+                leafCells.AddRange(ReturnAllLeaves(x - 1, y, cellsTraversed + 1).Select(leaf =>
+                {
+                    leaf.Path.Add(currentCell);
+                    return leaf;
+                }));
+                isLeafCell = false;
+            }
+
+            //bottom
+            if (x < LandScapeMatrix.SquareMapSide - 1 && landScape[x + 1, y].Z < landScape[x, y].Z)
+            {
+                leafCells.AddRange(ReturnAllLeaves(x + 1, y, cellsTraversed + 1).Select(leaf =>
                 {
                     leaf.Path.Add(currentCell);
                     return leaf;
@@ -403,7 +411,7 @@ namespace Problem1
                 leafCells.Add(new LandScapeCell(x, y, landScape[x, y].Z, cellsTraversed) { Path = new List<LandScapeCell> { currentCell } });
 
 
-            Lookup.TryAdd(LookupKey(x, y, cellsTraversed), leafCells);
+            //Lookup.TryAdd(LookupKey(x, y, cellsTraversed), leafCells);
             return leafCells;
         }
 
