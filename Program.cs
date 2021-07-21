@@ -20,6 +20,8 @@ namespace Problem1
             var solution = NonDfs();
             SolutionString(solution, sb);
 
+            LandScapeMatrix.Reset();
+
             sb.AppendLine(nameof(Dfs));
             solution = Dfs();
             SolutionString(solution, sb);
@@ -304,55 +306,59 @@ namespace Problem1
 
         private static LandScapeCell Dfs(int x, int y, int cellsTraversed)
         {
-
             var landScape = LandScapeMatrix.Cells;
-            var solutionCell = LandScapeMatrix.Cells[x, y];
-            solutionCell.CellsTraversed = cellsTraversed;
-            solutionCell.Path = solutionCell.Path ?? new List<LandScapeCell>{solutionCell};
+            var latestSolution = LandScapeMatrix.Cells[x, y];
+            latestSolution.CellsTraversed = cellsTraversed;
+            latestSolution.Path = latestSolution.Path ?? new List<LandScapeCell>{latestSolution};
 
-            LandScapeCell FindSolution(LandScapeCell newSol, LandScapeCell currSol)
+
+            void FindSolution(LandScapeCell newSol, ref LandScapeCell currentSol)
             {
-                if (newSol.CellsTraversed > currSol.CellsTraversed)
+                if (newSol.CellsTraversed > currentSol.CellsTraversed)
                 {
-                    newSol.Path.Add(solutionCell);
-                    return newSol;
+                    currentSol = newSol;
                 }
 
-                if (newSol.CellsTraversed == currSol.CellsTraversed && newSol.Z < currSol.Z)
-                { 
-                    newSol.Path.Add(solutionCell);
-                    return newSol;
+                if (newSol.CellsTraversed == currentSol.CellsTraversed && newSol.Z < currentSol.Z)
+                {
+                    currentSol = newSol;
                 }
-
-                return currSol;
             }
             
-
             //left
             if (y > 0 && landScape[x, y - 1].Z < landScape[x, y].Z)
             {
-                solutionCell = FindSolution(Dfs(x, y - 1, cellsTraversed + 1), solutionCell);
+                var leftSol = Dfs(x, y - 1, cellsTraversed + 1);
+                leftSol.Path.Add(latestSolution);
+                FindSolution(leftSol, ref latestSolution);
             }
 
             //right
             if (y < LandScapeMatrix.SquareMapSide - 1 && landScape[x, y + 1].Z < landScape[x, y].Z)
             {
-                solutionCell = FindSolution(Dfs(x, y + 1, cellsTraversed + 1), solutionCell);
+                var rightSol = Dfs(x, y + 1, cellsTraversed + 1);
+                rightSol.Path.Add(latestSolution);
+                FindSolution(rightSol, ref latestSolution);
             }
 
             //top
             if (x > 0 && landScape[x - 1, y].Z < landScape[x, y].Z)
             {
-                solutionCell = FindSolution(Dfs(x - 1, y, cellsTraversed + 1), solutionCell);
+                var topSol = Dfs(x - 1, y, cellsTraversed + 1);
+                topSol.Path.Add(latestSolution);
+                FindSolution(topSol, ref latestSolution);
             }
 
             //bottom
             if (x < LandScapeMatrix.SquareMapSide - 1 && landScape[x + 1, y].Z < landScape[x, y].Z)
             {
-                solutionCell = FindSolution(Dfs(x + 1, y, cellsTraversed + 1), solutionCell);
+                var bottomSol = Dfs(x + 1, y, cellsTraversed + 1);
+                bottomSol.Path.Add(latestSolution);
+                FindSolution(bottomSol, ref latestSolution);
             }
 
-            return solutionCell;
+            latestSolution.Path.Add(LandScapeMatrix.Cells[x, y]);
+            return latestSolution;
         }
 
         private static IEnumerable<LandScapeCell> ReturnAllLeaves(int x, int y, int cellsTraversed)

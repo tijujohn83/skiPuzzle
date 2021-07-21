@@ -28,16 +28,6 @@ namespace Problem1
             //IsPeak = null;
         }
 
-        public void UpdateSolution(LandScapeCell newSolution)
-        {
-            X = newSolution.X;
-            Y = newSolution.Y;
-            Z = newSolution.Z;
-            CellsTraversed = newSolution.CellsTraversed;
-            IsPeak = newSolution.IsPeak;
-            Path = Path ?? new List<LandScapeCell>();
-            Path.AddRange(newSolution.Path);
-        }
     }
 
 }

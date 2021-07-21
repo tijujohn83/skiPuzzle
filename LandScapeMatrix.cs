@@ -7,10 +7,30 @@ namespace Problem1
     {
         public static object LockObj = new object();
         //input assumes area represented as a square matrix of the size below
-        public const int SquareMapSide = 3;
+        public const int SquareMapSide = 2;
         public const bool GenerateRandom = false;
 
         private static LandScapeCell[,] _landScape;
+
+        private static string _sourceString;
+
+        private static string GetSourceString()
+        {
+            if (_sourceString != null)
+                return _sourceString;
+
+            if (GenerateRandom)
+                _sourceString = Utilities.GetCommaSeparatedNumbers(SquareMapSide);
+            else
+                _sourceString = File.ReadAllText($"..\\..\\LandScape{SquareMapSide}.txt");
+
+            return _sourceString;
+        }
+
+        public static void Reset()
+        {
+            _landScape = null;
+        }
 
         public static LandScapeCell[,] Cells
         {
@@ -21,13 +41,7 @@ namespace Problem1
                     if (_landScape != null)
                         return _landScape;
 
-                    string input;
-
-                    if (GenerateRandom)
-                        input = Utilities.GetCommaSeparatedNumbers(SquareMapSide);
-                    else
-                        input = File.ReadAllText($"..\\..\\LandScape{SquareMapSide}.txt");
-
+                    string input = GetSourceString();
 
                     _landScape = new LandScapeCell[SquareMapSide, SquareMapSide];
                     int row = 0, col = 0;
