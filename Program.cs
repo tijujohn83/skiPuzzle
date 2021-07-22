@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Linq;
 using System.Text;
 
@@ -28,6 +29,41 @@ namespace Problem1
             SolutionString(solution, sb);
 
             PrintToFile(sb.ToString());
+
+            //Test();
+            //Test();
+
+            Console.ReadKey();
+        }
+
+        private static void Test()
+        {
+            var iterations = 20;
+            var watch = System.Diagnostics.Stopwatch.StartNew();
+
+            watch.Reset();
+            watch.Start();
+            var nonDfs = new NonDfsSolution();
+            for (var i = 0; i < iterations; i++)
+            {
+                nonDfs.Solve();
+                LandScapeMatrix.Reset();
+            }
+
+            watch.Stop();
+            Console.WriteLine($"{nameof(NonDfsSolution)} executed {iterations} times. Time = {watch.ElapsedMilliseconds}");
+
+            watch.Reset();
+            watch.Start();
+            var dfs = new DfsSolution();
+            for (var i = 0; i < iterations; i++)
+            {
+                dfs.Solve();
+                LandScapeMatrix.Reset();
+            }
+
+            watch.Stop();
+            Console.WriteLine($"{nameof(DfsSolution)} executed {iterations} times. Time = {watch.ElapsedMilliseconds}");
         }
 
         private static void PrintProblem(StringBuilder sb)
