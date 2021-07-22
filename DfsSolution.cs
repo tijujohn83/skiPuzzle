@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 
 namespace Problem1
 {
@@ -10,20 +8,20 @@ namespace Problem1
 
         public Solution Solve()
         {
-            var solution = new Solution { Depth = 0, Length = 0, LongestPath = new List<LandScapeCell>() };
+            var solution = new Solution { LongestPath = new List<LandScapeCell>() };
 
             for (var x = 0; x < LandScapeMatrix.SquareMapSide; x++)
             {
                 for (var y = 0; y < LandScapeMatrix.SquareMapSide; y++)
                 {
-                    SolveForPeaksDfs(x, y, solution);
+                    SolveForPeaksDfs(x, y, ref solution);
                 }
             }
-            solution.LongestPath.Reverse();
+            solution?.LongestPath.Reverse();
             return solution;
         }
 
-        private static void SolveForPeaksDfs(int x, int y, Solution solution)
+        private static void SolveForPeaksDfs(int x, int y, ref Solution solution)
         {
             var currentCell = LandScapeMatrix.Cells[x, y];
             if (currentCell.IsPeak.HasValue) return;
@@ -74,23 +72,18 @@ namespace Problem1
 
             if (LandScapeMatrix.Cells[x, y].IsPeak.Value)
             {
-                var peak = SolveForPeakDfs(x, y);
+                var solutionThisPeak = SolveForPeakDfs(x, y);
 
                 lock (LockObj)
                 {
                     //longest then steepest
-                    if (peak.Length > solution.Length)
+                    if (solutionThisPeak.Length > solution.Length)
                     {
-                        solution.Length = peak.Length;
-                        solution.Depth = peak.Depth;
-                        solution.LongestPath = peak.LongestPath;
-                    } else if (peak.Length == solution.Length)
-                        if (peak.Depth > solution.Depth)
-                        {
-                            solution.Length = peak.Length;
-                            solution.Depth = peak.Depth;
-                            solution.LongestPath = peak.LongestPath;
-                        }
+                        solution = solutionThisPeak;
+                    } else if (solutionThisPeak.Length == solution.Length && solutionThisPeak.Depth > solution.Depth)
+                    {
+                        solution = solutionThisPeak;
+                    }
                 }
             }
 

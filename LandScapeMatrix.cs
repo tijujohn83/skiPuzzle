@@ -6,7 +6,6 @@ namespace Problem1
     public static class LandScapeMatrix
     {
         public static object LockObj = new object();
-        //input assumes area represented as a square matrix of the size below
         public const int SquareMapSide = 2;
         public const bool GenerateRandom = false;
 
@@ -41,19 +40,14 @@ namespace Problem1
                     if (_landScape != null)
                         return _landScape;
 
-                    string input = GetSourceString();
+                    var input = GetSourceString();
 
                     _landScape = new LandScapeCell[SquareMapSide, SquareMapSide];
                     int row = 0, col = 0;
 
                     foreach (var item in input.Split(','))
                     {
-                        _landScape[row, col] = new LandScapeCell
-                        {
-                            X = row,
-                            Y = col,
-                            Z = Convert.ToInt32(item)
-                        };
+                        _landScape[row, col] = new LandScapeCell(row,col,Convert.ToInt32(item));
 
                         col++;
                         if (col == SquareMapSide)
