@@ -98,16 +98,15 @@ namespace Problem1
         private static Solution SolveForPeakDfs(int x, int y)
         {
             var landScape = LandScapeMatrix.Cells;
-            var solutionCell = Dfs(x, y, 1, new List<LandScapeCell>());
-            return new Solution { Depth = landScape[x, y].Z - solutionCell.Z, Length = solutionCell.LongestCellsTraversed, Path = solutionCell.LongestPath.ToList() };
+            var solutionCell = Dfs(x, y, new List<LandScapeCell>());
+            return new Solution { Depth = landScape[x, y].Z - solutionCell.Z, Length = solutionCell.LongestPath.Count, Path = solutionCell.LongestPath.ToList() };
         }
 
-        private static LandScapeCell Dfs(int x, int y, int cellsTraversed, IEnumerable<LandScapeCell> path)
+        private static LandScapeCell Dfs(int x, int y, IEnumerable<LandScapeCell> path)
         {
             var landScape = LandScapeMatrix.Cells;
             var currentCell = landScape[x, y];
             var latestSolution = currentCell;
-            latestSolution.LongestCellsTraversed = cellsTraversed;
             latestSolution.LongestPath = latestSolution.LongestPath ?? new List<LandScapeCell>();
             latestSolution.LongestPath.AddRange(path);
             latestSolution.LongestPath.Add(currentCell);
@@ -115,12 +114,12 @@ namespace Problem1
 
             LandScapeCell PickBetter(LandScapeCell sol1, LandScapeCell sol2)
             {
-                if (sol1.LongestCellsTraversed > sol2.LongestCellsTraversed)
+                if (sol1.LongestPath.Count > sol2.LongestPath.Count)
                 {
                     return sol1;
                 }
 
-                if (sol1.LongestCellsTraversed == sol2.LongestCellsTraversed && sol1.Z < sol2.Z)
+                if (sol1.LongestPath.Count == sol2.LongestPath.Count && sol1.Z < sol2.Z)
                 {
                     return sol1;
                 }
@@ -131,28 +130,28 @@ namespace Problem1
             //left
             if (y > 0 && landScape[x, y - 1].Z < landScape[x, y].Z)
             {
-                var leftSol = Dfs(x, y - 1, cellsTraversed + 1, currentCell.LongestPath);
+                var leftSol = Dfs(x, y - 1, currentCell.LongestPath);
                 latestSolution = PickBetter(leftSol, latestSolution);
             }
 
             //right
             if (y < LandScapeMatrix.SquareMapSide - 1 && landScape[x, y + 1].Z < landScape[x, y].Z)
             {
-                var rightSol = Dfs(x, y + 1, cellsTraversed + 1, currentCell.LongestPath);
+                var rightSol = Dfs(x, y + 1, currentCell.LongestPath);
                 latestSolution = PickBetter(rightSol, latestSolution);
             }
 
             //top
             if (x > 0 && landScape[x - 1, y].Z < landScape[x, y].Z)
             {
-                var topSol = Dfs(x - 1, y, cellsTraversed + 1, currentCell.LongestPath);
+                var topSol = Dfs(x - 1, y, currentCell.LongestPath);
                 latestSolution = PickBetter(topSol, latestSolution);
             }
 
             //bottom
             if (x < LandScapeMatrix.SquareMapSide - 1 && landScape[x + 1, y].Z < landScape[x, y].Z)
             {
-                var bottomSol = Dfs(x + 1, y, cellsTraversed + 1, currentCell.LongestPath);
+                var bottomSol = Dfs(x + 1, y, currentCell.LongestPath);
                 latestSolution = PickBetter(bottomSol, latestSolution);
             }
 
