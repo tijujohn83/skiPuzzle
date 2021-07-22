@@ -10,7 +10,7 @@ namespace Problem1
 
         public Solution Solve()
         {
-            var solution = new Solution { LongestPath = new List<LandScapeCell>() };
+            var solution = new Solution { Path = new List<LandScapeCell>() };
             Parallel.For(0, LandScapeMatrix.SquareMapSide, x =>
             {
                 Parallel.For(0, LandScapeMatrix.SquareMapSide, y =>
@@ -19,7 +19,7 @@ namespace Problem1
                 });
             });
 
-            solution?.LongestPath.Reverse();
+            solution?.Path.Reverse();
             return solution;
         }
 
@@ -96,7 +96,7 @@ namespace Problem1
         {
             var landScape = LandScapeMatrix.Cells;
             var solutions = ReturnAllSolutions(x, y);
-            var solution = solutions.OrderByDescending(s => s.LongestPath.Count).ThenBy(cell => cell.Depth).FirstOrDefault();
+            var solution = solutions.OrderByDescending(s => s.Path.Count).ThenBy(cell => cell.Depth).FirstOrDefault();
             return solution;
         }
 
@@ -112,7 +112,7 @@ namespace Problem1
             {
                 solutions.AddRange(ReturnAllSolutions(x, y - 1).Select(leaf =>
                 {
-                    leaf.LongestPath.Add(currentCell);
+                    leaf.Path.Add(currentCell);
                     return leaf;
                 }));
                 isLeafCell = false;
@@ -123,7 +123,7 @@ namespace Problem1
             {
                 solutions.AddRange(ReturnAllSolutions(x, y + 1).Select(leaf =>
                 {
-                    leaf.LongestPath.Add(currentCell);
+                    leaf.Path.Add(currentCell);
                     return leaf;
                 }));
                 isLeafCell = false;
@@ -134,7 +134,7 @@ namespace Problem1
             {
                 solutions.AddRange(ReturnAllSolutions(x - 1, y).Select(leaf =>
                 {
-                    leaf.LongestPath.Add(currentCell);
+                    leaf.Path.Add(currentCell);
                     return leaf;
                 }));
                 isLeafCell = false;
@@ -145,14 +145,14 @@ namespace Problem1
             {
                 solutions.AddRange(ReturnAllSolutions(x + 1, y).Select(leaf =>
                 {
-                    leaf.LongestPath.Add(currentCell);
+                    leaf.Path.Add(currentCell);
                     return leaf;
                 }));
                 isLeafCell = false;
             }
 
             if (isLeafCell)
-                solutions.Add(new Solution { LongestPath = new List<LandScapeCell> { currentCell } });
+                solutions.Add(new Solution { Path = new List<LandScapeCell> { currentCell } });
 
 
             return solutions;
