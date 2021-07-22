@@ -6,7 +6,7 @@ namespace Problem1
     {
         public Solution Solve()
         {
-            var solution = new Solution { Path = new List<LandScapeCell>() };
+            var solution = new Solution();
 
             for (var x = 0; x < LandScapeMatrix.SquareMapSide; x++)
             {
@@ -15,7 +15,7 @@ namespace Problem1
                     SolveForPeaksDfs(x, y, ref solution);
                 }
             }
-            solution?.Path.Reverse();
+
             return solution;
         }
 
@@ -86,60 +86,67 @@ namespace Problem1
 
         private static Solution SolveForPeakDfs(int x, int y)
         {
-            return Dfs(x, y, new List<LandScapeCell>());
+            return Dfs(x, y);
         }
 
-        private static Solution Dfs(int x, int y, IEnumerable<LandScapeCell> path)
+        private static Solution Dfs(int x, int y)
         {
+            Solution solution = null;
             var landScape = LandScapeMatrix.Cells;
-            var currentCell = landScape[x, y];
-            var longestPath = new List<LandScapeCell>(path) { currentCell };
-            var solution = new Solution { Path = longestPath };
-            solution.Path.Add(currentCell);
+            var currentCell = LandScapeMatrix.Cells[x, y];
+            var isLeafCell = true;
 
-
-            Solution PickBetter(Solution sol1, Solution sol2)
+            Solution BestSolution(Solution sol1, Solution sol2)
             {
-                if (sol1.Path.Count > sol2.Path.Count)
+                if (sol1.Length > sol2.Length)
                 {
                     return sol1;
                 }
-
-                if (sol1.Path.Count == sol2.Path.Count && sol1.Depth < sol2.Depth)
+                if (sol1.Length == solution.Length && sol1.Depth > sol2.Depth)
                 {
                     return sol1;
                 }
-
                 return sol2;
             }
 
             //left
             if (y > 0 && landScape[x, y - 1].Z < landScape[x, y].Z)
             {
-                var leftSol = Dfs(x, y - 1, solution.Path);
-                solution = PickBetter(leftSol, solution);
+                var dfs = Dfs(x, y - 1);
+                dfs.Path.Insert(0, currentCell);
+                solution = dfs;
+                isLeafCell = false;
             }
 
             //right
             if (y < LandScapeMatrix.SquareMapSide - 1 && landScape[x, y + 1].Z < landScape[x, y].Z)
             {
-                var rightSol = Dfs(x, y + 1, solution.Path);
-                solution = PickBetter(rightSol, solution);
+                var dfs = Dfs(x, y + 1);
+                dfs.Path.Insert(0, currentCell);
+                solution = solution == null ? dfs : BestSolution(solution, dfs);
+                isLeafCell = false;
             }
 
             //top
             if (x > 0 && landScape[x - 1, y].Z < landScape[x, y].Z)
             {
-                var topSol = Dfs(x - 1, y, solution.Path);
-                solution = PickBetter(topSol, solution);
+                var dfs = Dfs(x - 1, y);
+                dfs.Path.Insert(0, currentCell);
+                solution = solution == null ? dfs : BestSolution(solution, dfs);
+                isLeafCell = false;
             }
 
             //bottom
             if (x < LandScapeMatrix.SquareMapSide - 1 && landScape[x + 1, y].Z < landScape[x, y].Z)
             {
-                var bottomSol = Dfs(x + 1, y, solution.Path);
-                solution = PickBetter(bottomSol, solution);
+                var dfs = Dfs(x + 1, y);
+                dfs.Path.Insert(0, currentCell);
+                solution = solution == null ? dfs : BestSolution(solution, dfs);
+                isLeafCell = false;
             }
+
+            if (isLeafCell)
+                solution = new Solution { Path = new List<LandScapeCell> { currentCell } };
 
             return solution;
         }

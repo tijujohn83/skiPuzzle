@@ -8,6 +8,6 @@ namespace Problem1
         public int Depth => Path.First().Z - Path.Last().Z;
         public int Length => Path.Count;
 
-        public List<LandScapeCell> Path;
+        public List<LandScapeCell> Path = new List<LandScapeCell>();
     }
 }
