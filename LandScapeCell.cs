@@ -1,26 +1,15 @@
-﻿using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
+﻿using System.Diagnostics;
 
 namespace Problem1
 {
-    [DebuggerDisplay("{Z}({X},{Y}), [{PathString}], {IsPeak.hasValue ? IsPeak.Value.ToString() : null}")]
+    [DebuggerDisplay("{Z}({X},{Y}), {IsPeak.hasValue ? IsPeak.Value.ToString() : null}")]
     public class LandScapeCell
     {
         public int X;
         public int Y;
         public int Z;
-        //public int LongestCellsTraversed;
         public bool? IsPeak;
-        public List<LandScapeCell> LongestPath;
-
-        public string PathString
-        {
-            get
-            {
-                return LongestPath != null ? string.Join("-> ", LongestPath.Select(p => $"({p.X},{p.Y})")) : "";
-            }
-        }
+        //public List<LandScapeCell> LongestPath;
 
         public LandScapeCell()
         {

@@ -36,11 +36,11 @@ namespace Problem1
 
         private static void SolutionString(Solution solution, StringBuilder sb)
         {
-            sb.Append($"Cells Traversed = {solution.Path.Count}, Fall = {solution.Depth}")
+            sb.Append($"Cells Traversed = {solution.LongestPath.Count}, Fall = {solution.Depth}")
                 .AppendLine();
 
-            sb.Append("Cells = ").Append(string.Join("🡢", solution.Path.Select(node => $"[{node.X}, {node.Y}]"))).AppendLine();
-            sb.Append("Heights = ").Append(string.Join("🡢", solution.Path.Select(node => LandScapeMatrix.Cells[node.X, node.Y].Z))).AppendLine().AppendLine();
+            sb.Append("Cells = ").Append(string.Join("🡢", solution.LongestPath.Select(node => $"[{node.X}, {node.Y}]"))).AppendLine();
+            sb.Append("Heights = ").Append(string.Join("🡢", solution.LongestPath.Select(node => LandScapeMatrix.Cells[node.X, node.Y].Z))).AppendLine().AppendLine();
 
             sb.AppendLine("Input");
             for (var x = 0; x < LandScapeMatrix.SquareMapSide; x++)
@@ -69,17 +69,17 @@ namespace Problem1
             {
                 for (var y = 0; y < LandScapeMatrix.SquareMapSide; y++)
                 {
-                    var node = solution.Path.FirstOrDefault(p => p.X == x && p.Y == y);
+                    var node = solution.LongestPath.FirstOrDefault(p => p.X == x && p.Y == y);
                     if (node != null)
                     {
-                        var nodeIndex = solution.Path.IndexOf(node);
-                        var isLastCell = nodeIndex == solution.Path.Count - 1;
+                        var nodeIndex = solution.LongestPath.IndexOf(node);
+                        var isLastCell = nodeIndex == solution.LongestPath.Count - 1;
 
                         var start = nodeIndex == 0 ? "@" : "";
 
                         if (!isLastCell)
                         {
-                            var next = solution.Path[nodeIndex + 1];
+                            var next = solution.LongestPath[nodeIndex + 1];
 
                             if (next.X == node.X && next.Y < node.Y)
                                 sb.Append($"{start}🡠".PadLeft(Space + 1).PadRight(Space + 3));

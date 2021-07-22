@@ -7,6 +7,6 @@ namespace Problem1
     {
         public int Depth;
         public int Length;
-        public List<LandScapeCell> Path;
+        public List<LandScapeCell> LongestPath;
     }
 }

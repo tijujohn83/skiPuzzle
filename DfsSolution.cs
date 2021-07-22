@@ -1,15 +1,16 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Problem1
 {
-    public class  DfsSolution : ISolution
+    public class DfsSolution : ISolution
     {
         private static readonly object LockObj = new object();
 
         public Solution Solve()
         {
-            var solution = new Solution { Depth = 0, Length = 0, Path = new List<LandScapeCell>() };
+            var solution = new Solution { Depth = 0, Length = 0, LongestPath = new List<LandScapeCell>() };
 
             for (var x = 0; x < LandScapeMatrix.SquareMapSide; x++)
             {
@@ -18,7 +19,7 @@ namespace Problem1
                     SolveForPeaksDfs(x, y, solution);
                 }
             }
-            solution.Path.Reverse();
+            solution.LongestPath.Reverse();
             return solution;
         }
 
@@ -82,13 +83,13 @@ namespace Problem1
                     {
                         solution.Length = peak.Length;
                         solution.Depth = peak.Depth;
-                        solution.Path = peak.Path;
+                        solution.LongestPath = peak.LongestPath;
                     } else if (peak.Length == solution.Length)
                         if (peak.Depth > solution.Depth)
                         {
                             solution.Length = peak.Length;
                             solution.Depth = peak.Depth;
-                            solution.Path = peak.Path;
+                            solution.LongestPath = peak.LongestPath;
                         }
                 }
             }
@@ -97,29 +98,26 @@ namespace Problem1
 
         private static Solution SolveForPeakDfs(int x, int y)
         {
-            var landScape = LandScapeMatrix.Cells;
-            var solutionCell = Dfs(x, y, new List<LandScapeCell>());
-            return new Solution { Depth = landScape[x, y].Z - solutionCell.Z, Length = solutionCell.LongestPath.Count, Path = solutionCell.LongestPath.ToList() };
+            return Dfs(x, y, new List<LandScapeCell>());
         }
 
-        private static LandScapeCell Dfs(int x, int y, IEnumerable<LandScapeCell> path)
+        private static Solution Dfs(int x, int y, IEnumerable<LandScapeCell> path)
         {
             var landScape = LandScapeMatrix.Cells;
             var currentCell = landScape[x, y];
-            var latestSolution = currentCell;
-            latestSolution.LongestPath = latestSolution.LongestPath ?? new List<LandScapeCell>();
-            latestSolution.LongestPath.AddRange(path);
-            latestSolution.LongestPath.Add(currentCell);
+            var longestPath = new List<LandScapeCell>(path) { currentCell };
+            var solution = new Solution { LongestPath = longestPath };
+            solution.LongestPath.Add(currentCell);
 
 
-            LandScapeCell PickBetter(LandScapeCell sol1, LandScapeCell sol2)
+            Solution PickBetter(Solution sol1, Solution sol2)
             {
                 if (sol1.LongestPath.Count > sol2.LongestPath.Count)
                 {
                     return sol1;
                 }
 
-                if (sol1.LongestPath.Count == sol2.LongestPath.Count && sol1.Z < sol2.Z)
+                if (sol1.LongestPath.Count == sol2.LongestPath.Count && sol1.Depth < sol2.Depth)
                 {
                     return sol1;
                 }
@@ -130,32 +128,32 @@ namespace Problem1
             //left
             if (y > 0 && landScape[x, y - 1].Z < landScape[x, y].Z)
             {
-                var leftSol = Dfs(x, y - 1, currentCell.LongestPath);
-                latestSolution = PickBetter(leftSol, latestSolution);
+                var leftSol = Dfs(x, y - 1, solution.LongestPath);
+                solution = PickBetter(leftSol, solution);
             }
 
             //right
             if (y < LandScapeMatrix.SquareMapSide - 1 && landScape[x, y + 1].Z < landScape[x, y].Z)
             {
-                var rightSol = Dfs(x, y + 1, currentCell.LongestPath);
-                latestSolution = PickBetter(rightSol, latestSolution);
+                var rightSol = Dfs(x, y + 1, solution.LongestPath);
+                solution = PickBetter(rightSol, solution);
             }
 
             //top
             if (x > 0 && landScape[x - 1, y].Z < landScape[x, y].Z)
             {
-                var topSol = Dfs(x - 1, y, currentCell.LongestPath);
-                latestSolution = PickBetter(topSol, latestSolution);
+                var topSol = Dfs(x - 1, y, solution.LongestPath);
+                solution = PickBetter(topSol, solution);
             }
 
             //bottom
             if (x < LandScapeMatrix.SquareMapSide - 1 && landScape[x + 1, y].Z < landScape[x, y].Z)
             {
-                var bottomSol = Dfs(x + 1, y, currentCell.LongestPath);
-                latestSolution = PickBetter(bottomSol, latestSolution);
+                var bottomSol = Dfs(x + 1, y, solution.LongestPath);
+                solution = PickBetter(bottomSol, solution);
             }
 
-            return latestSolution;
+            return solution;
         }
     }
 }
