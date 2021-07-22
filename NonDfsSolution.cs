@@ -95,7 +95,7 @@ namespace Problem1
         {
             return ReturnAllSolutions(x, y)
                 .OrderByDescending(s => s.Path.Count)
-                .ThenBy(s => s.Depth)
+                .ThenByDescending(s => s.Depth)
                 .FirstOrDefault();
         }
 
