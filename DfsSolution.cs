@@ -91,9 +91,9 @@ namespace Problem1
 
         private static Solution Dfs(int x, int y)
         {
-            Solution solution = null;
+            var solution = new Solution();
             var landScape = LandScapeMatrix.Cells;
-            var currentCell = LandScapeMatrix.Cells[x, y];
+            var currentCell = landScape[x, y];
             var isLeafCell = true;
 
             Solution BestSolution(Solution sol1, Solution sol2)
@@ -110,7 +110,7 @@ namespace Problem1
             }
 
             //left
-            if (y > 0 && landScape[x, y - 1].Z < landScape[x, y].Z)
+            if (y > 0 && landScape[x, y - 1].Z < currentCell.Z)
             {
                 var dfs = Dfs(x, y - 1);
                 dfs.Path.Insert(0, currentCell);
@@ -119,34 +119,34 @@ namespace Problem1
             }
 
             //right
-            if (y < LandScapeMatrix.SquareMapSide - 1 && landScape[x, y + 1].Z < landScape[x, y].Z)
+            if (y < LandScapeMatrix.SquareMapSide - 1 && landScape[x, y + 1].Z < currentCell.Z)
             {
                 var dfs = Dfs(x, y + 1);
                 dfs.Path.Insert(0, currentCell);
-                solution = solution == null ? dfs : BestSolution(solution, dfs);
+                solution = BestSolution(solution, dfs);
                 isLeafCell = false;
             }
 
             //top
-            if (x > 0 && landScape[x - 1, y].Z < landScape[x, y].Z)
+            if (x > 0 && landScape[x - 1, y].Z < currentCell.Z)
             {
                 var dfs = Dfs(x - 1, y);
                 dfs.Path.Insert(0, currentCell);
-                solution = solution == null ? dfs : BestSolution(solution, dfs);
+                solution = BestSolution(solution, dfs);
                 isLeafCell = false;
             }
 
             //bottom
-            if (x < LandScapeMatrix.SquareMapSide - 1 && landScape[x + 1, y].Z < landScape[x, y].Z)
+            if (x < LandScapeMatrix.SquareMapSide - 1 && landScape[x + 1, y].Z < currentCell.Z)
             {
                 var dfs = Dfs(x + 1, y);
                 dfs.Path.Insert(0, currentCell);
-                solution = solution == null ? dfs : BestSolution(solution, dfs);
+                solution = BestSolution(solution, dfs);
                 isLeafCell = false;
             }
 
             if (isLeafCell)
-                solution = new Solution { Path = new List<LandScapeCell> { currentCell } };
+                solution.Path.Add(currentCell);
 
             return solution;
         }
