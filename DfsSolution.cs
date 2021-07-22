@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Problem1
+﻿namespace Problem1
 {
     public class DfsSolution : ISolution
     {
@@ -102,7 +100,7 @@ namespace Problem1
                 {
                     return sol1;
                 }
-                if (sol1.Length == solution.Length && sol1.Depth > sol2.Depth)
+                if (sol1.Length == sol2.Length && sol1.Depth > sol2.Depth)
                 {
                     return sol1;
                 }
