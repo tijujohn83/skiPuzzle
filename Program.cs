@@ -12,6 +12,7 @@ namespace Problem1
         static void Main(string[] args)
         {
             var sb = new StringBuilder();
+            PrintProblem(sb);
             Solution solution;
 
             ISolution nonDfs = new NonDfsSolution();
@@ -29,6 +30,20 @@ namespace Problem1
             PrintToFile(sb.ToString());
         }
 
+        private static void PrintProblem(StringBuilder sb)
+        {
+            sb.AppendLine("Input");
+            for (var x = 0; x < LandScapeMatrix.SquareMapSide; x++)
+            {
+                for (var y = 0; y < LandScapeMatrix.SquareMapSide; y++)
+                {
+                    sb.Append($"{LandScapeMatrix.Cells[x, y].Z}".PadLeft(Space).PadRight(Space + 2));
+                }
+                sb.AppendLine();
+            }
+            sb.AppendLine();
+        }
+
         private static void PrintToFile(string result)
         {
             File.WriteAllText(@"..\..\solution.txt", result, Encoding.UTF8);
@@ -40,18 +55,8 @@ namespace Problem1
                 .AppendLine();
 
             sb.Append("Cells = ").Append(string.Join("🡢", solution.Path.Select(node => $"[{node.X}, {node.Y}]"))).AppendLine();
-            sb.Append("Heights = ").Append(string.Join("🡢", solution.Path.Select(node => LandScapeMatrix.Cells[node.X, node.Y].Z))).AppendLine().AppendLine();
-
-            //sb.AppendLine("Input");
-            //for (var x = 0; x < LandScapeMatrix.SquareMapSide; x++)
-            //{
-            //    for (var y = 0; y < LandScapeMatrix.SquareMapSide; y++)
-            //    {
-            //        sb.Append($"{LandScapeMatrix.Cells[x, y].Z}".PadLeft(Space).PadRight(Space + 2));
-            //    }
-            //    sb.AppendLine();
-            //}
-
+            sb.Append("Heights = ").Append(string.Join("🡢", solution.Path.Select(node => LandScapeMatrix.Cells[node.X, node.Y].Z))).AppendLine();
+            
             //sb.AppendLine().AppendLine("Peaks");
             //for (var x = 0; x < LandScapeMatrix.SquareMapSide; x++)
             //{
