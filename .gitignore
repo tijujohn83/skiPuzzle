@@ -11,6 +11,7 @@
 *.vcxproj.filters
 Inspections.xml
 logs/
+LandScape*.txt
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
