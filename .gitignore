@@ -12,6 +12,7 @@
 Inspections.xml
 logs/
 LandScape*.txt
+solution.txt
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs

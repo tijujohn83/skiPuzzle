@@ -10,7 +10,7 @@ namespace Problem1
 
         public LandScapeMatrix()
         {
-            MatrixLength = 5000;
+            MatrixLength = 2;
             GenerateRandomMatrix = true;
         }
 
