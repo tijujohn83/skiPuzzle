@@ -119,7 +119,7 @@ namespace Problem1
             }
 
 
-            sb.Append($"Cells Traversed = {solutions.FirstOrDefault()?.Path.Count ?? 0}, Fall = {solutions.FirstOrDefault()?.Depth ?? 0}")
+            sb.Append($"Hops = {solutions.FirstOrDefault()?.Path.Count ?? 0}, Depth = {solutions.FirstOrDefault()?.Depth ?? 0}")
                 .AppendLine().AppendLine();
 
             var solutionCount = 0;

@@ -1,26 +1,19 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Net;
-using System.Threading.Tasks;
-using System.Xml.Linq;
 
 namespace Problem1
 {
     public class NonDfsSolution : ISolution
     {
-        private static readonly object LockObj = new object();
-
         public IEnumerable<Solution> Solve()
         {
             var solutions = new List<Solution>();
-            Parallel.For(0, LandScapeMatrix.MatrixLength, x =>
-            {
+
+            for (var x = 0; x < LandScapeMatrix.MatrixLength; x++)
                 for (var y = 0; y < LandScapeMatrix.MatrixLength; y++)
                 {
                     SolveForPeaks(x, y, solutions);
                 }
-            });
-
             return solutions;
         }
 
@@ -81,34 +74,32 @@ namespace Problem1
                 var firstSolutionThisPeak = solutionsForThisPeak.FirstOrDefault();
                 var currentFirstSolution = solutions.FirstOrDefault();
 
-                lock (LockObj)
+                if (firstSolutionThisPeak != null)
                 {
-                    if (firstSolutionThisPeak != null)
+                    //if no current solutions, then add the latest
+                    if (currentFirstSolution == null)
                     {
-                        //if no current solutions, then add the latest
-                        if (currentFirstSolution == null)
-                        {
-                            solutions.AddRange(solutionsForThisPeak);
-                        }
-                        //this peak solutions have more hops
-                        else if (firstSolutionThisPeak.Hops > currentFirstSolution.Hops)
-                        {
-                            solutions.Clear();
-                            solutions.AddRange(solutionsForThisPeak);
-                        }
-                        //this peak solutions have same hops but more depth
-                        else if (firstSolutionThisPeak.Hops == currentFirstSolution.Hops && firstSolutionThisPeak.Depth > currentFirstSolution.Depth)
-                        {
-                            solutions.Clear();
-                            solutions.AddRange(solutionsForThisPeak);
-                        }
-                        //this peak solutions have same hops and same depth
-                        else if (firstSolutionThisPeak.Hops == currentFirstSolution.Hops && firstSolutionThisPeak.Depth == currentFirstSolution.Depth)
-                        {
-                            solutions.AddRange(solutionsForThisPeak);
-                        }
+                        solutions.AddRange(solutionsForThisPeak);
+                    }
+                    //this peak solutions have more hops
+                    else if (firstSolutionThisPeak.Hops > currentFirstSolution.Hops)
+                    {
+                        solutions.Clear();
+                        solutions.AddRange(solutionsForThisPeak);
+                    }
+                    //this peak solutions have same hops but more depth
+                    else if (firstSolutionThisPeak.Hops == currentFirstSolution.Hops && firstSolutionThisPeak.Depth > currentFirstSolution.Depth)
+                    {
+                        solutions.Clear();
+                        solutions.AddRange(solutionsForThisPeak);
+                    }
+                    //this peak solutions have same hops and same depth
+                    else if (firstSolutionThisPeak.Hops == currentFirstSolution.Hops && firstSolutionThisPeak.Depth == currentFirstSolution.Depth)
+                    {
+                        solutions.AddRange(solutionsForThisPeak);
                     }
                 }
+
             }
 
 
@@ -121,18 +112,17 @@ namespace Problem1
             if (allSolutions.Any())
             {
 
-                var maxHops = allSolutions.OrderByDescending(s => s.Hops).FirstOrDefault().Hops;
+                var maxHops = allSolutions.OrderByDescending(s => s.Hops).FirstOrDefault()?.Hops ?? 0;
                 var maxDepth = allSolutions.Where(s => s.Hops == maxHops).OrderByDescending(s => s.Depth)
-                    .FirstOrDefault().Depth;
+                    .FirstOrDefault()?.Depth ?? 0;
 
                 return ReturnAllSolutions(x, y)
                     .Where(s => s.Hops == maxHops && s.Depth == maxDepth);
             }
-
             return Enumerable.Empty<Solution>();
         }
 
-        private static IEnumerable<Solution> ReturnAllSolutions(int x, int y)
+        private static List<Solution> ReturnAllSolutions(int x, int y)
         {
             var landScape = LandScapeMatrix.Cells;
             var currentCell = LandScapeMatrix.Cells[x, y];
