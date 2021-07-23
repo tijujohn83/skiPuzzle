@@ -24,6 +24,7 @@ namespace Problem1
             var landScape = LandScapeMatrix.Cells;
             var currentCell = LandScapeMatrix.Cells[x, y];
             var possibleSolutions = new List<Solution>();
+            var solutions = new List<Solution>();
             var isLeafCell = true;
 
             if (y > 0 && landScape[x, y - 1].Z < landScape[x, y].Z)
@@ -84,10 +85,10 @@ namespace Problem1
                 var maxDepth = possibleSolutions.Where(s => s.Hops == maxHops).OrderByDescending(s => s.Depth)
                     .FirstOrDefault()?.Depth ?? 0;
 
-                return possibleSolutions.Where(s => s.Hops == maxHops && s.Depth == maxDepth).ToList();
+                solutions.AddRange(possibleSolutions.Where(s => s.Hops == maxHops && s.Depth == maxDepth));
             }
 
-            return _solutions;
+            return solutions;
         }
     }
 }
