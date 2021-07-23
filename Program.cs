@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
-//Answer for Landscape1000.txt: Hops=15, Depth=1422
+//Answer for LandScape1000_original.txt: Hops=15, Depth=1422
 //Hops=[693, 603]🡢[694, 603]🡢[694, 604]🡢[695, 604]🡢[695, 605]🡢[694, 605]🡢[694, 606]🡢[693, 606]🡢[692, 606]🡢[692, 605]🡢[691, 605]🡢[691, 606]🡢[690, 606]🡢[689, 606]🡢[689, 607]
 //HopHeights=1422🡢1412🡢1316🡢1304🡢1207🡢1162🡢965🡢945🡢734🡢429🡢332🡢310🡢214🡢143🡢0
 
@@ -12,39 +14,70 @@ namespace Problem1
 {
     class Program
     {
+        private static readonly object Lock = new object();
+
         public const int Space = 2;
         public const bool PrintLandscapeMatrix = false;
         public const bool PrintPeaks = false;
         public const bool PrintSolutionPath = false;
+        public const bool RunFindInterestingMatrices = true;
 
         static void Main(string[] args)
         {
+            FindMatricesWithMultipleSolutions();
+
             var sb = new StringBuilder();
             var landScapeMatrix = new LandScapeMatrix();
-            PrintProblem(landScapeMatrix, sb);
-            
+            PrintMatrix(landScapeMatrix, sb);
+
             sb.AppendLine(nameof(NonDfsSolution));
-
-            //var sol = DfsSolution.Solve();
-            //var trial = 1;
-            //while (sol.Count < 5)
-            //{
-            //    Console.WriteLine(trial++);
-            //    LandScapeMatrix.ResetMatricWithSource();
-            //    sol = DfsSolution.Solve();
-            //}
-
             SolutionString(landScapeMatrix, new NonDfsSolution().Solve(landScapeMatrix), sb);
-
             landScapeMatrix.ResetMatrix();
 
             sb.AppendLine(nameof(DfsSolution));
             SolutionString(landScapeMatrix, new DfsSolution().Solve(landScapeMatrix), sb);
 
+
             PrintToFile(sb.ToString());
 
             //TestPerformance(landScapeMatrix);
 
+        }
+
+        private static void FindMatricesWithMultipleSolutions()
+        {
+            if(!RunFindInterestingMatrices) return;
+
+            var trial = 1;
+            var bestCount = 0;
+
+            LandScapeMatrix bestMatrix = null;
+            var sb = new StringBuilder();
+
+            Parallel.For((long) 0, 10000000, (_, state) =>
+            {
+                var dfs = new DfsSolution();
+                var landScapeMatrixParallel = new LandScapeMatrix();
+
+                var sol = dfs.Solve(landScapeMatrixParallel);
+                Interlocked.Increment(ref trial);
+
+                lock (Lock)
+                {
+                    bestMatrix = bestMatrix ?? landScapeMatrixParallel;
+                    if (sol.Count > bestCount)
+                    {
+                        bestMatrix = landScapeMatrixParallel;
+                        bestCount = sol.Count;
+                        Console.WriteLine(trial + "-" + sol.Count);
+                        File.WriteAllText($"..\\..\\LandScape{bestMatrix.MatrixLength}.txt", bestMatrix.GetSourceString(), Encoding.UTF8);
+                        sb.Clear();
+                        SolutionString(bestMatrix, sol, sb);
+                        PrintToFile(sb.ToString());
+                    }
+                }
+               
+            });
         }
 
         private static void TestPerformance(LandScapeMatrix landScapeMatrix)
@@ -79,7 +112,7 @@ namespace Problem1
             Console.ReadKey();
         }
 
-        private static void PrintProblem(LandScapeMatrix landScapeMatrix, StringBuilder sb)
+        private static void PrintMatrix(LandScapeMatrix landScapeMatrix, StringBuilder sb)
         {
             if (!PrintLandscapeMatrix) return;
 

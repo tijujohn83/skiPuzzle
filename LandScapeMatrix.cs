@@ -10,7 +10,7 @@ namespace Problem1
 
         public LandScapeMatrix()
         {
-            MatrixLength = 250;
+            MatrixLength = 5000;
             GenerateRandomMatrix = true;
         }
 
@@ -41,7 +41,7 @@ namespace Problem1
             _landScape = null;
         }
 
-        public void ResetMatricWithSource()
+        public void ResetMatrixData()
         {
             _landScape = null;
             _sourceString = null;
