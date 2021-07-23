@@ -20,51 +20,50 @@ namespace Problem1
             var currentCell = LandScapeMatrix.Cells[x, y];
             if (currentCell.IsPeak.HasValue) return;
 
-            var current = currentCell.Z;
-
-            int left;
+           
+            LandScapeCell leftCell;
             if (y - 1 < 0)
-                left = current;
+                leftCell = currentCell;
             else
             {
-                left = LandScapeMatrix.Cells[x, y - 1].Z;
-                if (current > left) LandScapeMatrix.Cells[x, y - 1].IsPeak = false;
+                leftCell = LandScapeMatrix.Cells[x, y - 1];
+                if (currentCell.Z > leftCell.Z) leftCell.IsPeak = false;
             }
 
-            int right;
+            LandScapeCell rightCell;
             if (y + 1 >= LandScapeMatrix.MatrixLength)
-                right = current;
+                rightCell = currentCell;
             else
             {
-                right = LandScapeMatrix.Cells[x, y + 1].Z;
-                if (current > right) LandScapeMatrix.Cells[x, y + 1].IsPeak = false;
+                rightCell = LandScapeMatrix.Cells[x, y + 1];
+                if (currentCell.Z > rightCell.Z) rightCell.IsPeak = false;
             }
 
-            int top;
+            LandScapeCell topCell;
             if (x - 1 < 0)
-                top = current;
+                topCell = currentCell;
             else
             {
-                top = LandScapeMatrix.Cells[x - 1, y].Z;
-                if (current > top) LandScapeMatrix.Cells[x - 1, y].IsPeak = false;
+                topCell = LandScapeMatrix.Cells[x - 1, y];
+                if (currentCell.Z > topCell.Z) topCell.IsPeak = false;
             }
 
-            int bottom;
+            LandScapeCell bottomCell;
             if (x + 1 >= LandScapeMatrix.MatrixLength)
-                bottom = current;
+                bottomCell = currentCell;
             else
             {
-                bottom = LandScapeMatrix.Cells[x + 1, y].Z;
-                if (current > bottom) LandScapeMatrix.Cells[x + 1, y].IsPeak = false;
+                bottomCell = LandScapeMatrix.Cells[x + 1, y];
+                if (currentCell.Z > bottomCell.Z) bottomCell.IsPeak = false;
             }
 
-            LandScapeMatrix.Cells[x, y].IsPeak = current >= left
-                                              && current >= right
-                                              && current >= top
-                                              && current >= bottom;
+            currentCell.IsPeak = currentCell.Z >= leftCell.Z
+                                 && currentCell.Z >= rightCell.Z
+                                 && currentCell.Z >= topCell.Z
+                                 && currentCell.Z >= bottomCell.Z;
 
 
-            if (LandScapeMatrix.Cells[x, y].IsPeak.Value)
+            if (currentCell.IsPeak.Value)
                 solutions.TakeBestSolutions(Dfs(x, y));
 
         }
