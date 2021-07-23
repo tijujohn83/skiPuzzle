@@ -20,27 +20,34 @@ namespace Problem1
         static void Main(string[] args)
         {
             var sb = new StringBuilder();
-            PrintProblem(sb);
-            var solutions = new List<Solution>();
+            var landScapeMatrix = new LandScapeMatrix();
+            PrintProblem(landScapeMatrix, sb);
             
             sb.AppendLine(nameof(NonDfsSolution));
-            solutions.AddRange(NonDfsSolution.Solve());
-            SolutionString(solutions, sb);
 
-            LandScapeMatrix.Reset();
-            solutions.Clear();
+            //var sol = DfsSolution.Solve();
+            //var trial = 1;
+            //while (sol.Count < 5)
+            //{
+            //    Console.WriteLine(trial++);
+            //    LandScapeMatrix.ResetMatricWithSource();
+            //    sol = DfsSolution.Solve();
+            //}
+
+            SolutionString(landScapeMatrix, new NonDfsSolution().Solve(landScapeMatrix), sb);
+
+            landScapeMatrix.ResetMatrix();
 
             sb.AppendLine(nameof(DfsSolution));
-            solutions.AddRange(DfsSolution.Solve());
-            SolutionString(solutions, sb);
+            SolutionString(landScapeMatrix, new DfsSolution().Solve(landScapeMatrix), sb);
 
             PrintToFile(sb.ToString());
 
-            //Test();
+            //TestPerformance(landScapeMatrix);
 
         }
 
-        private static void Test()
+        private static void TestPerformance(LandScapeMatrix landScapeMatrix)
         {
             var iterations = 20;
 
@@ -50,8 +57,8 @@ namespace Problem1
             watch.Start();
             for (var i = 0; i < iterations; i++)
             {
-                NonDfsSolution.Solve();
-                LandScapeMatrix.Reset();
+                new NonDfsSolution().Solve(landScapeMatrix);
+                landScapeMatrix.ResetMatrix();
             }
 
             watch.Stop();
@@ -62,8 +69,8 @@ namespace Problem1
             watch.Start();
             for (var i = 0; i < iterations; i++)
             {
-                DfsSolution.Solve();
-                LandScapeMatrix.Reset();
+                new DfsSolution().Solve(landScapeMatrix);
+                landScapeMatrix.ResetMatrix();
             }
 
             watch.Stop();
@@ -72,16 +79,16 @@ namespace Problem1
             Console.ReadKey();
         }
 
-        private static void PrintProblem(StringBuilder sb)
+        private static void PrintProblem(LandScapeMatrix landScapeMatrix, StringBuilder sb)
         {
             if (!PrintLandscapeMatrix) return;
 
             sb.AppendLine("Input");
-            for (var x = 0; x < LandScapeMatrix.MatrixLength; x++)
+            for (var x = 0; x < landScapeMatrix.MatrixLength; x++)
             {
-                for (var y = 0; y < LandScapeMatrix.MatrixLength; y++)
+                for (var y = 0; y < landScapeMatrix.MatrixLength; y++)
                 {
-                    sb.Append($"{LandScapeMatrix.Cells[x, y].Z}".PadLeft(Space).PadRight(Space + 2));
+                    sb.Append($"{landScapeMatrix.Cells[x, y].Z}".PadLeft(Space).PadRight(Space + 2));
                 }
 
                 sb.AppendLine();
@@ -95,18 +102,18 @@ namespace Problem1
             File.WriteAllText(@"..\..\solution.txt", result, Encoding.UTF8);
         }
 
-        private static void SolutionString(List<Solution> solutions, StringBuilder sb)
+        private static void SolutionString(LandScapeMatrix landScapeMatrix, List<Solution> solutions, StringBuilder sb)
         {
             if (PrintPeaks)
             {
                 sb.AppendLine("Peaks");
-                for (var x = 0; x < LandScapeMatrix.MatrixLength; x++)
+                for (var x = 0; x < landScapeMatrix.MatrixLength; x++)
                 {
-                    for (var y = 0; y < LandScapeMatrix.MatrixLength; y++)
+                    for (var y = 0; y < landScapeMatrix.MatrixLength; y++)
                     {
-                        var isPeak = LandScapeMatrix.Cells[x, y].IsPeak;
+                        var isPeak = landScapeMatrix.Cells[x, y].IsPeak;
                         sb.Append(isPeak != null && isPeak.Value
-                            ? LandScapeMatrix.Cells[x, y].Z.ToString().PadLeft(Space).PadRight(Space + 2)
+                            ? landScapeMatrix.Cells[x, y].Z.ToString().PadLeft(Space).PadRight(Space + 2)
                             : "●".PadLeft(Space).PadRight(Space + 2));
                     }
                     sb.AppendLine();
@@ -128,15 +135,15 @@ namespace Problem1
                     .AppendLine();
 
                 sb.Append("Heights = ")
-                    .Append(string.Join("🡢", solution.Path.Select(node => LandScapeMatrix.Cells[node.X, node.Y].Z)))
+                    .Append(string.Join("🡢", solution.Path.Select(node => landScapeMatrix.Cells[node.X, node.Y].Z)))
                     .AppendLine().AppendLine();
 
 
                 if (PrintSolutionPath)
                 {
-                    for (var x = 0; x < LandScapeMatrix.MatrixLength; x++)
+                    for (var x = 0; x < landScapeMatrix.MatrixLength; x++)
                     {
-                        for (var y = 0; y < LandScapeMatrix.MatrixLength; y++)
+                        for (var y = 0; y < landScapeMatrix.MatrixLength; y++)
                         {
                             var node = solution.Path.FirstOrDefault(p => p.X == x && p.Y == y);
                             if (node != null)

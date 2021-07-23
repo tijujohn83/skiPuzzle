@@ -3,32 +3,34 @@ using System.Linq;
 
 namespace Problem1
 {
-    public static class NonDfsSolution
+    public  class NonDfsSolution
     {
-        private static List<Solution> _solutions;
+        private List<Solution> _solutions;
+        private LandScapeMatrix _landScapeMatrix;
 
-        public static IEnumerable<Solution> Solve()
+        public List<Solution> Solve(LandScapeMatrix landScapeMatrix)
         {
             _solutions = new List<Solution>();
+            _landScapeMatrix = landScapeMatrix;
 
-            for (var x = 0; x < LandScapeMatrix.MatrixLength; x++)
-                for (var y = 0; y < LandScapeMatrix.MatrixLength; y++)
-                    if (!LandScapeMatrix.Cells[x, y].IsPeak.HasValue)
+            for (var x = 0; x < _landScapeMatrix.MatrixLength; x++)
+                for (var y = 0; y < _landScapeMatrix.MatrixLength; y++)
+                    if (!_landScapeMatrix.Cells[x, y].IsPeak.HasValue)
                         _solutions.Merge(NonDfs(x, y));
 
             return _solutions;
         }
 
-        private static List<Solution> NonDfs(int x, int y)
+        private List<Solution> NonDfs(int x, int y)
         {
-            var landScape = LandScapeMatrix.Cells;
-            var currentCell = LandScapeMatrix.Cells[x, y];
+            var cells = _landScapeMatrix.Cells;
+            var currentCell = _landScapeMatrix.Cells[x, y];
             var possibleSolutions = new List<Solution>();
             var isLeafCell = true;
 
-            if (y > 0 && landScape[x, y - 1].Z < landScape[x, y].Z)
+            if (y > 0 && cells[x, y - 1].Z < cells[x, y].Z)
             {
-                LandScapeMatrix.Cells[x, y - 1].IsPeak = false;
+                _landScapeMatrix.Cells[x, y - 1].IsPeak = false;
                 var left = NonDfs(x, y - 1);
                 possibleSolutions.AddRange(left.Select(leaf =>
                 {
@@ -38,9 +40,9 @@ namespace Problem1
                 isLeafCell = false;
             }
 
-            if (y < LandScapeMatrix.MatrixLength - 1 && landScape[x, y + 1].Z < landScape[x, y].Z)
+            if (y < _landScapeMatrix.MatrixLength - 1 && cells[x, y + 1].Z < cells[x, y].Z)
             {
-                LandScapeMatrix.Cells[x, y + 1].IsPeak = false;
+                _landScapeMatrix.Cells[x, y + 1].IsPeak = false;
                 var right = NonDfs(x, y + 1);
                 possibleSolutions.AddRange(right.Select(leaf =>
                 {
@@ -50,9 +52,9 @@ namespace Problem1
                 isLeafCell = false;
             }
 
-            if (x > 0 && landScape[x - 1, y].Z < landScape[x, y].Z)
+            if (x > 0 && cells[x - 1, y].Z < cells[x, y].Z)
             {
-                LandScapeMatrix.Cells[x - 1, y].IsPeak = false;
+                _landScapeMatrix.Cells[x - 1, y].IsPeak = false;
                 var top = NonDfs(x - 1, y);
                 possibleSolutions.AddRange(top.Select(leaf =>
                 {
@@ -62,9 +64,9 @@ namespace Problem1
                 isLeafCell = false;
             }
 
-            if (x < LandScapeMatrix.MatrixLength - 1 && landScape[x + 1, y].Z < landScape[x, y].Z)
+            if (x < _landScapeMatrix.MatrixLength - 1 && cells[x + 1, y].Z < cells[x, y].Z)
             {
-                LandScapeMatrix.Cells[x + 1, y].IsPeak = false;
+                _landScapeMatrix.Cells[x + 1, y].IsPeak = false;
                 var bottom = NonDfs(x + 1, y);
                 possibleSolutions.AddRange(bottom.Select(leaf =>
                 {

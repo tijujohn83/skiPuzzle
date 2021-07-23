@@ -3,17 +3,27 @@ using System.IO;
 
 namespace Problem1
 {
-    public static class LandScapeMatrix
+    public class LandScapeMatrix
     {
-        public static object LockObj = new object();
-        public const int MatrixLength = 1000;
-        public const bool GenerateRandomMatrix = false;
+        public int MatrixLength { get; }
+        public bool GenerateRandomMatrix { get; }
 
-        private static LandScapeCell[,] _landScape;
+        public LandScapeMatrix()
+        {
+            MatrixLength = 250;
+            GenerateRandomMatrix = true;
+        }
 
-        private static string _sourceString;
+        public LandScapeMatrix(int matrixLength, bool generateRandomMatrix)
+        {
+            MatrixLength = matrixLength;
+            GenerateRandomMatrix = generateRandomMatrix;
+        }
 
-        private static string GetSourceString()
+        private LandScapeCell[,] _landScape;
+        private string _sourceString;
+
+        public string GetSourceString()
         {
             if (_sourceString != null)
                 return _sourceString;
@@ -26,42 +36,45 @@ namespace Problem1
             return _sourceString;
         }
 
-        public static void Reset()
+        public void ResetMatrix()
         {
             _landScape = null;
         }
 
-        public static LandScapeCell[,] Cells
+        public void ResetMatricWithSource()
+        {
+            _landScape = null;
+            _sourceString = null;
+        }
+
+        public LandScapeCell[,] Cells
         {
             get
             {
-                lock (LockObj)
+                if (_landScape != null)
+                    return _landScape;
+
+                var input = GetSourceString();
+
+                _landScape = new LandScapeCell[MatrixLength, MatrixLength];
+                int row = 0, col = 0;
+
+                foreach (var item in input.Split(','))
                 {
-                    if (_landScape != null)
-                        return _landScape;
+                    _landScape[row, col] = new LandScapeCell(row, col, Convert.ToInt32(item));
 
-                    var input = GetSourceString();
-
-                    _landScape = new LandScapeCell[MatrixLength, MatrixLength];
-                    int row = 0, col = 0;
-
-                    foreach (var item in input.Split(','))
+                    col++;
+                    if (col == MatrixLength)
                     {
-                        _landScape[row, col] = new LandScapeCell(row,col,Convert.ToInt32(item));
-
-                        col++;
-                        if (col == MatrixLength)
-                        {
-                            row++;
-                            col = 0;
-                        }
-
-                        if (row == MatrixLength)
-                            break;
+                        row++;
+                        col = 0;
                     }
 
-                    return _landScape;
+                    if (row == MatrixLength)
+                        break;
                 }
+
+                return _landScape;
             }
         }
 
