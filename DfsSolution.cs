@@ -1,11 +1,10 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 
 namespace Problem1
 {
-    public class DfsSolution : ISolution
+    public static class DfsSolution
     {
-        public IEnumerable<Solution> Solve()
+        public static IEnumerable<Solution> Solve()
         {
             var solutions = new List<Solution>();
 
@@ -66,42 +65,9 @@ namespace Problem1
 
 
             if (LandScapeMatrix.Cells[x, y].IsPeak.Value)
-            {
-                var solutionsForThisPeak = Dfs(x, y);
-
-                // take any because all solutions in the top set will have same number of hops and depth
-                var firstSolutionThisPeak = solutionsForThisPeak.FirstOrDefault();
-                var currentFirstSolution = solutions.FirstOrDefault();
-
-                if (firstSolutionThisPeak != null)
-                {
-                    //if no current solutions, then add the latest
-                    if (currentFirstSolution == null)
-                    {
-                        solutions.AddRange(solutionsForThisPeak);
-                    }
-                    //this peak solutions have more hops
-                    else if (firstSolutionThisPeak.Hops > currentFirstSolution.Hops)
-                    {
-                        solutions.Clear();
-                        solutions.AddRange(solutionsForThisPeak);
-                    }
-                    //this peak solutions have same hops but more depth
-                    else if (firstSolutionThisPeak.Hops == currentFirstSolution.Hops && firstSolutionThisPeak.Depth > currentFirstSolution.Depth)
-                    {
-                        solutions.Clear();
-                        solutions.AddRange(solutionsForThisPeak);
-                    }
-                    //this peak solutions have same hops and same depth
-                    else if (firstSolutionThisPeak.Hops == currentFirstSolution.Hops && firstSolutionThisPeak.Depth == currentFirstSolution.Depth)
-                    {
-                        solutions.AddRange(solutionsForThisPeak);
-                    }
-                }
-            }
+                solutions.TakeBestSolutions(Dfs(x, y));
 
         }
-
 
         private static List<Solution> Dfs(int x, int y)
         {
@@ -109,41 +75,6 @@ namespace Problem1
             var landScape = LandScapeMatrix.Cells;
             var currentCell = landScape[x, y];
             var isLeafCell = true;
-
-            void UpdateBestSolutions(List<Solution> newSolutions)
-            {
-                // take any because all solutions in the top set will have same number of hops and depth
-                var firstNewSolution = newSolutions.FirstOrDefault();
-                var firstCurrentSolution = solutions.FirstOrDefault();
-
-                if (firstNewSolution != null)
-                {
-                    //if no current solutions, then add the latest
-                    if (firstCurrentSolution == null)
-                    {
-                        solutions.AddRange(newSolutions);
-                    }
-                    //this peak solutions have more hops
-                    else if (firstNewSolution.Hops > firstCurrentSolution.Hops)
-                    {
-                        solutions.Clear();
-                        solutions.AddRange(newSolutions);
-                    }
-                    //this peak solutions have same hops but more depth
-                    else if (firstNewSolution.Hops == firstCurrentSolution.Hops && firstNewSolution.Depth > firstCurrentSolution.Depth)
-                    {
-                        solutions.Clear();
-                        solutions.AddRange(newSolutions);
-                    }
-                    //this peak solutions have same hops and same depth
-                    else if (firstNewSolution.Hops == firstCurrentSolution.Hops && firstNewSolution.Depth == firstCurrentSolution.Depth)
-                    {
-                        solutions.AddRange(newSolutions);
-                    }
-
-                }
-
-            }
 
             //left
             if (y > 0 && landScape[x, y - 1].Z < currentCell.Z)
@@ -153,7 +84,7 @@ namespace Problem1
                 {
                     sol.Path.Insert(0, currentCell);
                 });
-                UpdateBestSolutions(dfs);
+                solutions.TakeBestSolutions(dfs);
                 isLeafCell = false;
             }
 
@@ -165,7 +96,7 @@ namespace Problem1
                 {
                     sol.Path.Insert(0, currentCell);
                 });
-                UpdateBestSolutions(dfs);
+                solutions.TakeBestSolutions(dfs);
                 isLeafCell = false;
             }
 
@@ -177,7 +108,7 @@ namespace Problem1
                 {
                     sol.Path.Insert(0, currentCell);
                 });
-                UpdateBestSolutions(dfs);
+                solutions.TakeBestSolutions(dfs);
                 isLeafCell = false;
             }
 
@@ -189,7 +120,7 @@ namespace Problem1
                 {
                     sol.Path.Insert(0, currentCell);
                 });
-                UpdateBestSolutions(dfs);
+                solutions.TakeBestSolutions(dfs);
                 isLeafCell = false;
             }
 
@@ -202,5 +133,7 @@ namespace Problem1
 
             return solutions;
         }
+
+        
     }
 }

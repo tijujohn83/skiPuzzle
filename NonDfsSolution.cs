@@ -3,9 +3,9 @@ using System.Linq;
 
 namespace Problem1
 {
-    public class NonDfsSolution : ISolution
+    public static class NonDfsSolution
     {
-        public IEnumerable<Solution> Solve()
+        public static IEnumerable<Solution> Solve()
         {
             var solutions = new List<Solution>();
 
@@ -67,60 +67,25 @@ namespace Problem1
 
 
             if (LandScapeMatrix.Cells[x, y].IsPeak.Value)
-            {
-                var newSolutions = SolveForPeak(x, y);
+                solutions.TakeBestSolutions(SolveForThePeak(x, y));
 
-                // take any because all solutions in the top set will have same number of hops and depth
-                var firstNewSolution = newSolutions.FirstOrDefault();
-                var firstCurrentSolution = solutions.FirstOrDefault();
-
-                if (firstNewSolution != null)
-                {
-                    //if no current solutions, then add the latest
-                    if (firstCurrentSolution == null)
-                    {
-                        solutions.AddRange(newSolutions);
-                    }
-                    //this peak solutions have more hops
-                    else if (firstNewSolution.Hops > firstCurrentSolution.Hops)
-                    {
-                        solutions.Clear();
-                        solutions.AddRange(newSolutions);
-                    }
-                    //this peak solutions have same hops but more depth
-                    else if (firstNewSolution.Hops == firstCurrentSolution.Hops && firstNewSolution.Depth > firstCurrentSolution.Depth)
-                    {
-                        solutions.Clear();
-                        solutions.AddRange(newSolutions);
-                    }
-                    //this peak solutions have same hops and same depth
-                    else if (firstNewSolution.Hops == firstCurrentSolution.Hops && firstNewSolution.Depth == firstCurrentSolution.Depth)
-                    {
-                        solutions.AddRange(newSolutions);
-                    }
-                }
-
-            }
         }
 
-        private static List<Solution> SolveForPeak(int x, int y)
+        private static List<Solution> SolveForThePeak(int x, int y)
         {
-            var allSolutions = ReturnAllSolutions(x, y);
-
+            var allSolutions = AllSolutionsFrom(x, y);
             if (allSolutions.Any())
             {
-
                 var maxHops = allSolutions.OrderByDescending(s => s.Hops).FirstOrDefault()?.Hops ?? 0;
                 var maxDepth = allSolutions.Where(s => s.Hops == maxHops).OrderByDescending(s => s.Depth)
                     .FirstOrDefault()?.Depth ?? 0;
 
-                return ReturnAllSolutions(x, y)
-                    .Where(s => s.Hops == maxHops && s.Depth == maxDepth).ToList();
+                return AllSolutionsFrom(x, y).Where(s => s.Hops == maxHops && s.Depth == maxDepth).ToList();
             }
             return Enumerable.Empty<Solution>().ToList();
         }
 
-        private static List<Solution> ReturnAllSolutions(int x, int y)
+        private static List<Solution> AllSolutionsFrom(int x, int y)
         {
             var landScape = LandScapeMatrix.Cells;
             var currentCell = LandScapeMatrix.Cells[x, y];
@@ -130,7 +95,7 @@ namespace Problem1
             //left
             if (y > 0 && landScape[x, y - 1].Z < landScape[x, y].Z)
             {
-                solutions.AddRange(ReturnAllSolutions(x, y - 1).Select(leaf =>
+                solutions.AddRange(AllSolutionsFrom(x, y - 1).Select(leaf =>
                 {
                     leaf.Path.Insert(0, currentCell);
                     return leaf;
@@ -141,7 +106,7 @@ namespace Problem1
             //right
             if (y < LandScapeMatrix.MatrixLength - 1 && landScape[x, y + 1].Z < landScape[x, y].Z)
             {
-                solutions.AddRange(ReturnAllSolutions(x, y + 1).Select(leaf =>
+                solutions.AddRange(AllSolutionsFrom(x, y + 1).Select(leaf =>
                 {
                     leaf.Path.Insert(0, currentCell);
                     return leaf;
@@ -152,7 +117,7 @@ namespace Problem1
             //top
             if (x > 0 && landScape[x - 1, y].Z < landScape[x, y].Z)
             {
-                solutions.AddRange(ReturnAllSolutions(x - 1, y).Select(leaf =>
+                solutions.AddRange(AllSolutionsFrom(x - 1, y).Select(leaf =>
                 {
                     leaf.Path.Insert(0, currentCell);
                     return leaf;
@@ -163,7 +128,7 @@ namespace Problem1
             //bottom
             if (x < LandScapeMatrix.MatrixLength - 1 && landScape[x + 1, y].Z < landScape[x, y].Z)
             {
-                solutions.AddRange(ReturnAllSolutions(x + 1, y).Select(leaf =>
+                solutions.AddRange(AllSolutionsFrom(x + 1, y).Select(leaf =>
                 {
                     leaf.Path.Insert(0, currentCell);
                     return leaf;

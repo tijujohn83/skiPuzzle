@@ -60,9 +60,9 @@
     <Compile Include="AshleysSolution\GraphThoeryTest.cs" />
     <Compile Include="AshleysSolution\SingaporeSki.cs" />
     <Compile Include="DfsSolution.cs" />
-    <Compile Include="ISolution.cs" />
     <Compile Include="LandScapeMatrix.cs" />
     <Compile Include="LandScapeCell.cs" />
+    <Compile Include="Logic.cs" />
     <Compile Include="NonDfsSolution.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Solution.cs" />

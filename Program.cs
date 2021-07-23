@@ -22,18 +22,16 @@ namespace Problem1
             var sb = new StringBuilder();
             PrintProblem(sb);
             var solutions = new List<Solution>();
-
-            ISolution nonDfs = new NonDfsSolution();
+            
             sb.AppendLine(nameof(NonDfsSolution));
-            solutions.AddRange(nonDfs.Solve());
+            solutions.AddRange(NonDfsSolution.Solve());
             SolutionString(solutions, sb);
 
             LandScapeMatrix.Reset();
             solutions.Clear();
 
-            ISolution dfs = new DfsSolution();
             sb.AppendLine(nameof(DfsSolution));
-            solutions.AddRange(dfs.Solve());
+            solutions.AddRange(DfsSolution.Solve());
             SolutionString(solutions, sb);
 
             PrintToFile(sb.ToString());
@@ -50,10 +48,9 @@ namespace Problem1
 
             watch.Reset();
             watch.Start();
-            var nonDfs = new NonDfsSolution();
             for (var i = 0; i < iterations; i++)
             {
-                nonDfs.Solve();
+                NonDfsSolution.Solve();
                 LandScapeMatrix.Reset();
             }
 
@@ -63,10 +60,9 @@ namespace Problem1
 
             watch.Reset();
             watch.Start();
-            var dfs = new DfsSolution();
             for (var i = 0; i < iterations; i++)
             {
-                dfs.Solve();
+                DfsSolution.Solve();
                 LandScapeMatrix.Reset();
             }
 
@@ -126,14 +122,14 @@ namespace Problem1
 
             foreach (var solution in solutions)
             {
-                sb.Append("Solution ").AppendLine(solutionCount++.ToString());
+                sb.Append("Solution ").AppendLine((++solutionCount).ToString());
 
                 sb.Append("Cells = ").Append(string.Join("🡢", solution.Path.Select(node => $"[{node.X}, {node.Y}]")))
                     .AppendLine();
 
                 sb.Append("Heights = ")
                     .Append(string.Join("🡢", solution.Path.Select(node => LandScapeMatrix.Cells[node.X, node.Y].Z)))
-                    .AppendLine();
+                    .AppendLine().AppendLine();
 
 
                 if (PrintSolutionPath)
