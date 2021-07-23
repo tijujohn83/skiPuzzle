@@ -147,10 +147,10 @@ namespace SkiPuzzle
                 {
                     for (var y = 0; y < landScapeMatrix.MatrixLength; y++)
                     {
-                        var isPeak = landScapeMatrix.Cells[x, y].IsPeak;
-                        sb.Append(isPeak != null && isPeak.Value
-                            ? landScapeMatrix.Cells[x, y].Z.ToString().PadLeft(Space).PadRight(Space + 2)
-                            : "●".PadLeft(Space).PadRight(Space + 2));
+                        var isPeak = !landScapeMatrix.Cells[x, y].IsPeak.HasValue;
+                        sb.Append(isPeak 
+                                    ? landScapeMatrix.Cells[x, y].Z.ToString().PadLeft(Space).PadRight(Space + 2)
+                                    : "●".PadLeft(Space).PadRight(Space + 2));
                     }
                     sb.AppendLine();
                 }
