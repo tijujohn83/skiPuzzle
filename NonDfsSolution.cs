@@ -13,9 +13,9 @@ namespace Problem1
         public IEnumerable<Solution> Solve()
         {
             var solutions = new List<Solution>();
-            Parallel.For(0, LandScapeMatrix.SquareMapSide, x =>
+            Parallel.For(0, LandScapeMatrix.MatrixLength, x =>
             {
-                for (var y = 0; y < LandScapeMatrix.SquareMapSide; y++)
+                for (var y = 0; y < LandScapeMatrix.MatrixLength; y++)
                 {
                     SolveForPeaks(x, y, solutions);
                 }
@@ -41,7 +41,7 @@ namespace Problem1
             }
 
             int right;
-            if (y + 1 >= LandScapeMatrix.SquareMapSide)
+            if (y + 1 >= LandScapeMatrix.MatrixLength)
                 right = current;
             else
             {
@@ -59,7 +59,7 @@ namespace Problem1
             }
 
             int bottom;
-            if (x + 1 >= LandScapeMatrix.SquareMapSide)
+            if (x + 1 >= LandScapeMatrix.MatrixLength)
                 bottom = current;
             else
             {
@@ -151,7 +151,7 @@ namespace Problem1
             }
 
             //right
-            if (y < LandScapeMatrix.SquareMapSide - 1 && landScape[x, y + 1].Z < landScape[x, y].Z)
+            if (y < LandScapeMatrix.MatrixLength - 1 && landScape[x, y + 1].Z < landScape[x, y].Z)
             {
                 solutions.AddRange(ReturnAllSolutions(x, y + 1).Select(leaf =>
                 {
@@ -173,7 +173,7 @@ namespace Problem1
             }
 
             //bottom
-            if (x < LandScapeMatrix.SquareMapSide - 1 && landScape[x + 1, y].Z < landScape[x, y].Z)
+            if (x < LandScapeMatrix.MatrixLength - 1 && landScape[x + 1, y].Z < landScape[x, y].Z)
             {
                 solutions.AddRange(ReturnAllSolutions(x + 1, y).Select(leaf =>
                 {

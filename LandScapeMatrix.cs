@@ -6,8 +6,8 @@ namespace Problem1
     public static class LandScapeMatrix
     {
         public static object LockObj = new object();
-        public const int SquareMapSide = 1000;
-        public const bool GenerateRandom = false;
+        public const int MatrixLength = 1000;
+        public const bool GenerateRandomMatrix = false;
 
         private static LandScapeCell[,] _landScape;
 
@@ -18,10 +18,10 @@ namespace Problem1
             if (_sourceString != null)
                 return _sourceString;
 
-            if (GenerateRandom)
-                _sourceString = Utilities.GetCommaSeparatedNumbers(SquareMapSide);
+            if (GenerateRandomMatrix)
+                _sourceString = Utilities.GetCommaSeparatedNumbers(MatrixLength);
             else
-                _sourceString = File.ReadAllText($"..\\..\\LandScape{SquareMapSide}.txt");
+                _sourceString = File.ReadAllText($"..\\..\\LandScape{MatrixLength}.txt");
 
             return _sourceString;
         }
@@ -42,7 +42,7 @@ namespace Problem1
 
                     var input = GetSourceString();
 
-                    _landScape = new LandScapeCell[SquareMapSide, SquareMapSide];
+                    _landScape = new LandScapeCell[MatrixLength, MatrixLength];
                     int row = 0, col = 0;
 
                     foreach (var item in input.Split(','))
@@ -50,13 +50,13 @@ namespace Problem1
                         _landScape[row, col] = new LandScapeCell(row,col,Convert.ToInt32(item));
 
                         col++;
-                        if (col == SquareMapSide)
+                        if (col == MatrixLength)
                         {
                             row++;
                             col = 0;
                         }
 
-                        if (row == SquareMapSide)
+                        if (row == MatrixLength)
                             break;
                     }
 

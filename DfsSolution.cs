@@ -8,9 +8,9 @@ namespace Problem1
         {
             var solution = new Solution();
 
-            for (var x = 0; x < LandScapeMatrix.SquareMapSide; x++)
+            for (var x = 0; x < LandScapeMatrix.MatrixLength; x++)
             {
-                for (var y = 0; y < LandScapeMatrix.SquareMapSide; y++)
+                for (var y = 0; y < LandScapeMatrix.MatrixLength; y++)
                 {
                     SolveForPeaksDfs(x, y, ref solution);
                 }
@@ -36,7 +36,7 @@ namespace Problem1
             }
 
             int right;
-            if (y + 1 >= LandScapeMatrix.SquareMapSide)
+            if (y + 1 >= LandScapeMatrix.MatrixLength)
                 right = current;
             else
             {
@@ -54,7 +54,7 @@ namespace Problem1
             }
 
             int bottom;
-            if (x + 1 >= LandScapeMatrix.SquareMapSide)
+            if (x + 1 >= LandScapeMatrix.MatrixLength)
                 bottom = current;
             else
             {
@@ -119,7 +119,7 @@ namespace Problem1
             }
 
             //right
-            if (y < LandScapeMatrix.SquareMapSide - 1 && landScape[x, y + 1].Z < currentCell.Z)
+            if (y < LandScapeMatrix.MatrixLength - 1 && landScape[x, y + 1].Z < currentCell.Z)
             {
                 var dfs = Dfs(x, y + 1);
                 dfs.Path.Insert(0, currentCell);
@@ -137,7 +137,7 @@ namespace Problem1
             }
 
             //bottom
-            if (x < LandScapeMatrix.SquareMapSide - 1 && landScape[x + 1, y].Z < currentCell.Z)
+            if (x < LandScapeMatrix.MatrixLength - 1 && landScape[x + 1, y].Z < currentCell.Z)
             {
                 var dfs = Dfs(x + 1, y);
                 dfs.Path.Insert(0, currentCell);

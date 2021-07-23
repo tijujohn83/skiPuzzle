@@ -81,9 +81,9 @@ namespace Problem1
             if (!PrintLandscapeMatrix) return;
 
             sb.AppendLine("Input");
-            for (var x = 0; x < LandScapeMatrix.SquareMapSide; x++)
+            for (var x = 0; x < LandScapeMatrix.MatrixLength; x++)
             {
-                for (var y = 0; y < LandScapeMatrix.SquareMapSide; y++)
+                for (var y = 0; y < LandScapeMatrix.MatrixLength; y++)
                 {
                     sb.Append($"{LandScapeMatrix.Cells[x, y].Z}".PadLeft(Space).PadRight(Space + 2));
                 }
@@ -104,9 +104,9 @@ namespace Problem1
             if (PrintPeaks)
             {
                 sb.AppendLine("Peaks");
-                for (var x = 0; x < LandScapeMatrix.SquareMapSide; x++)
+                for (var x = 0; x < LandScapeMatrix.MatrixLength; x++)
                 {
-                    for (var y = 0; y < LandScapeMatrix.SquareMapSide; y++)
+                    for (var y = 0; y < LandScapeMatrix.MatrixLength; y++)
                     {
                         var isPeak = LandScapeMatrix.Cells[x, y].IsPeak;
                         sb.Append(isPeak != null && isPeak.Value
@@ -138,9 +138,9 @@ namespace Problem1
 
                 if (PrintSolutionPath)
                 {
-                    for (var x = 0; x < LandScapeMatrix.SquareMapSide; x++)
+                    for (var x = 0; x < LandScapeMatrix.MatrixLength; x++)
                     {
-                        for (var y = 0; y < LandScapeMatrix.SquareMapSide; y++)
+                        for (var y = 0; y < LandScapeMatrix.MatrixLength; y++)
                         {
                             var node = solution.Path.FirstOrDefault(p => p.X == x && p.Y == y);
                             if (node != null)
