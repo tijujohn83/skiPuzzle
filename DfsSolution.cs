@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace Problem1
 {
@@ -6,20 +7,16 @@ namespace Problem1
     {
         public IEnumerable<Solution> Solve()
         {
-            var solution = new Solution();
+            var solutions = new List<Solution>();
 
             for (var x = 0; x < LandScapeMatrix.MatrixLength; x++)
-            {
                 for (var y = 0; y < LandScapeMatrix.MatrixLength; y++)
-                {
-                    SolveForPeaksDfs(x, y, ref solution);
-                }
-            }
+                    SolveForPeaksDfs(x, y, solutions);
 
-            yield return solution;
+            return solutions;
         }
 
-        private static void SolveForPeaksDfs(int x, int y, ref Solution solution)
+        private static void SolveForPeaksDfs(int x, int y, List<Solution> solutions)
         {
             var currentCell = LandScapeMatrix.Cells[x, y];
             if (currentCell.IsPeak.HasValue) return;
@@ -70,51 +67,93 @@ namespace Problem1
 
             if (LandScapeMatrix.Cells[x, y].IsPeak.Value)
             {
-                var solutionThisPeak = SolveForPeakDfs(x, y);
+                var solutionsForThisPeak = Dfs(x, y);
 
-                //longest then steepest
-                if (solutionThisPeak.Hops > solution.Hops)
+                // take any because all solutions in the top set will have same number of hops and depth
+                var firstSolutionThisPeak = solutionsForThisPeak.FirstOrDefault();
+                var currentFirstSolution = solutions.FirstOrDefault();
+
+                if (firstSolutionThisPeak != null)
                 {
-                    solution = solutionThisPeak;
-                } else if (solutionThisPeak.Hops == solution.Hops && solutionThisPeak.Depth > solution.Depth)
-                {
-                    solution = solutionThisPeak;
+                    //if no current solutions, then add the latest
+                    if (currentFirstSolution == null)
+                    {
+                        solutions.AddRange(solutionsForThisPeak);
+                    }
+                    //this peak solutions have more hops
+                    else if (firstSolutionThisPeak.Hops > currentFirstSolution.Hops)
+                    {
+                        solutions.Clear();
+                        solutions.AddRange(solutionsForThisPeak);
+                    }
+                    //this peak solutions have same hops but more depth
+                    else if (firstSolutionThisPeak.Hops == currentFirstSolution.Hops && firstSolutionThisPeak.Depth > currentFirstSolution.Depth)
+                    {
+                        solutions.Clear();
+                        solutions.AddRange(solutionsForThisPeak);
+                    }
+                    //this peak solutions have same hops and same depth
+                    else if (firstSolutionThisPeak.Hops == currentFirstSolution.Hops && firstSolutionThisPeak.Depth == currentFirstSolution.Depth)
+                    {
+                        solutions.AddRange(solutionsForThisPeak);
+                    }
                 }
             }
 
         }
 
-        private static Solution SolveForPeakDfs(int x, int y)
-        {
-            return Dfs(x, y);
-        }
 
-        private static Solution Dfs(int x, int y)
+        private static List<Solution> Dfs(int x, int y)
         {
-            var solution = new Solution();
+            var solutions = new List<Solution>();
             var landScape = LandScapeMatrix.Cells;
             var currentCell = landScape[x, y];
             var isLeafCell = true;
 
-            Solution BestSolution(Solution sol1, Solution sol2)
+            void UpdateBestSolutions(List<Solution> newSolutions)
             {
-                if (sol1.Hops > sol2.Hops)
+                // take any because all solutions in the top set will have same number of hops and depth
+                var firstNewSolution = newSolutions.FirstOrDefault();
+                var firstCurrentSolution = solutions.FirstOrDefault();
+
+                if (firstNewSolution != null)
                 {
-                    return sol1;
+                    //if no current solutions, then add the latest
+                    if (firstCurrentSolution == null)
+                    {
+                        solutions.AddRange(newSolutions);
+                    }
+                    //this peak solutions have more hops
+                    else if (firstNewSolution.Hops > firstCurrentSolution.Hops)
+                    {
+                        solutions.Clear();
+                        solutions.AddRange(newSolutions);
+                    }
+                    //this peak solutions have same hops but more depth
+                    else if (firstNewSolution.Hops == firstCurrentSolution.Hops && firstNewSolution.Depth > firstCurrentSolution.Depth)
+                    {
+                        solutions.Clear();
+                        solutions.AddRange(newSolutions);
+                    }
+                    //this peak solutions have same hops and same depth
+                    else if (firstNewSolution.Hops == firstCurrentSolution.Hops && firstNewSolution.Depth == firstCurrentSolution.Depth)
+                    {
+                        solutions.AddRange(newSolutions);
+                    }
+
                 }
-                if (sol1.Hops == sol2.Hops && sol1.Depth > sol2.Depth)
-                {
-                    return sol1;
-                }
-                return sol2;
+
             }
 
             //left
             if (y > 0 && landScape[x, y - 1].Z < currentCell.Z)
             {
                 var dfs = Dfs(x, y - 1);
-                dfs.Path.Insert(0, currentCell);
-                solution = dfs;
+                dfs.ForEach(sol =>
+                {
+                    sol.Path.Insert(0, currentCell);
+                });
+                UpdateBestSolutions(dfs);
                 isLeafCell = false;
             }
 
@@ -122,8 +161,11 @@ namespace Problem1
             if (y < LandScapeMatrix.MatrixLength - 1 && landScape[x, y + 1].Z < currentCell.Z)
             {
                 var dfs = Dfs(x, y + 1);
-                dfs.Path.Insert(0, currentCell);
-                solution = BestSolution(solution, dfs);
+                dfs.ForEach(sol =>
+                {
+                    sol.Path.Insert(0, currentCell);
+                });
+                UpdateBestSolutions(dfs);
                 isLeafCell = false;
             }
 
@@ -131,8 +173,11 @@ namespace Problem1
             if (x > 0 && landScape[x - 1, y].Z < currentCell.Z)
             {
                 var dfs = Dfs(x - 1, y);
-                dfs.Path.Insert(0, currentCell);
-                solution = BestSolution(solution, dfs);
+                dfs.ForEach(sol =>
+                {
+                    sol.Path.Insert(0, currentCell);
+                });
+                UpdateBestSolutions(dfs);
                 isLeafCell = false;
             }
 
@@ -140,15 +185,22 @@ namespace Problem1
             if (x < LandScapeMatrix.MatrixLength - 1 && landScape[x + 1, y].Z < currentCell.Z)
             {
                 var dfs = Dfs(x + 1, y);
-                dfs.Path.Insert(0, currentCell);
-                solution = BestSolution(solution, dfs);
+                dfs.ForEach(sol =>
+                {
+                    sol.Path.Insert(0, currentCell);
+                });
+                UpdateBestSolutions(dfs);
                 isLeafCell = false;
             }
 
             if (isLeafCell)
-                solution.Path.Add(currentCell);
+            {
+                var curSol = new Solution();
+                curSol.Path.Add(currentCell);
+                solutions.Add(curSol);
+            }
 
-            return solution;
+            return solutions;
         }
     }
 }

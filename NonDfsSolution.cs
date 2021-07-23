@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 namespace Problem1
@@ -69,42 +68,42 @@ namespace Problem1
 
             if (LandScapeMatrix.Cells[x, y].IsPeak.Value)
             {
-                var solutionsForThisPeak = SolveForPeak(x, y).ToList();
+                var newSolutions = SolveForPeak(x, y);
 
                 // take any because all solutions in the top set will have same number of hops and depth
-                var firstSolutionThisPeak = solutionsForThisPeak.FirstOrDefault();
-                var currentFirstSolution = solutions.FirstOrDefault();
+                var firstNewSolution = newSolutions.FirstOrDefault();
+                var firstCurrentSolution = solutions.FirstOrDefault();
 
-                if (firstSolutionThisPeak != null)
+                if (firstNewSolution != null)
                 {
                     //if no current solutions, then add the latest
-                    if (currentFirstSolution == null)
+                    if (firstCurrentSolution == null)
                     {
-                        solutions.AddRange(solutionsForThisPeak);
+                        solutions.AddRange(newSolutions);
                     }
                     //this peak solutions have more hops
-                    else if (firstSolutionThisPeak.Hops > currentFirstSolution.Hops)
+                    else if (firstNewSolution.Hops > firstCurrentSolution.Hops)
                     {
                         solutions.Clear();
-                        solutions.AddRange(solutionsForThisPeak);
+                        solutions.AddRange(newSolutions);
                     }
                     //this peak solutions have same hops but more depth
-                    else if (firstSolutionThisPeak.Hops == currentFirstSolution.Hops && firstSolutionThisPeak.Depth > currentFirstSolution.Depth)
+                    else if (firstNewSolution.Hops == firstCurrentSolution.Hops && firstNewSolution.Depth > firstCurrentSolution.Depth)
                     {
                         solutions.Clear();
-                        solutions.AddRange(solutionsForThisPeak);
+                        solutions.AddRange(newSolutions);
                     }
                     //this peak solutions have same hops and same depth
-                    else if (firstSolutionThisPeak.Hops == currentFirstSolution.Hops && firstSolutionThisPeak.Depth == currentFirstSolution.Depth)
+                    else if (firstNewSolution.Hops == firstCurrentSolution.Hops && firstNewSolution.Depth == firstCurrentSolution.Depth)
                     {
-                        solutions.AddRange(solutionsForThisPeak);
+                        solutions.AddRange(newSolutions);
                     }
                 }
 
             }
         }
 
-        private static IEnumerable<Solution> SolveForPeak(int x, int y)
+        private static List<Solution> SolveForPeak(int x, int y)
         {
             var allSolutions = ReturnAllSolutions(x, y);
 
@@ -116,9 +115,9 @@ namespace Problem1
                     .FirstOrDefault()?.Depth ?? 0;
 
                 return ReturnAllSolutions(x, y)
-                    .Where(s => s.Hops == maxHops && s.Depth == maxDepth);
+                    .Where(s => s.Hops == maxHops && s.Depth == maxDepth).ToList();
             }
-            return Enumerable.Empty<Solution>();
+            return Enumerable.Empty<Solution>().ToList();
         }
 
         private static List<Solution> ReturnAllSolutions(int x, int y)
