@@ -1,7 +1,9 @@
-﻿namespace Problem1
+﻿using System.Collections.Generic;
+
+namespace Problem1
 {
     public interface ISolution
     {
-        Solution Solve();
+        IEnumerable<Solution> Solve();
     }
 }

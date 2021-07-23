@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace Problem1
 {
@@ -8,21 +10,21 @@ namespace Problem1
     {
         private static readonly object LockObj = new object();
 
-        public Solution Solve()
+        public IEnumerable<Solution> Solve()
         {
-            var solution = new Solution();
+            var solutions = new List<Solution>();
             Parallel.For(0, LandScapeMatrix.SquareMapSide, x =>
             {
-                Parallel.For(0, LandScapeMatrix.SquareMapSide, y =>
+                for (var y = 0; y < LandScapeMatrix.SquareMapSide; y++)
                 {
-                    SolveForPeaks(x, y, ref solution);
-                });
+                    SolveForPeaks(x, y, solutions);
+                }
             });
 
-            return solution;
+            return solutions;
         }
 
-        private static void SolveForPeaks(int x, int y, ref Solution solution)
+        private static void SolveForPeaks(int x, int y, List<Solution> solutions)
         {
             var currentCell = LandScapeMatrix.Cells[x, y];
             if (currentCell.IsPeak.HasValue) return;
@@ -73,17 +75,38 @@ namespace Problem1
 
             if (LandScapeMatrix.Cells[x, y].IsPeak.Value)
             {
-                var solutionThisPeak = SolveForPeak(x, y);
+                var solutionsForThisPeak = SolveForPeak(x, y).ToList();
+
+                // take any because all solutions in the top set will have same number of hops and depth
+                var firstSolutionThisPeak = solutionsForThisPeak.FirstOrDefault();
+                var currentFirstSolution = solutions.FirstOrDefault();
 
                 lock (LockObj)
                 {
-                    //longest then steepest
-                    if (solutionThisPeak.Length > solution.Length)
+                    if (firstSolutionThisPeak != null)
                     {
-                        solution = solutionThisPeak;
-                    } else if (solutionThisPeak.Length == solution.Length && solutionThisPeak.Depth > solution.Depth)
-                    {
-                        solution = solutionThisPeak;
+                        //if no current solutions, then add the latest
+                        if (currentFirstSolution == null)
+                        {
+                            solutions.AddRange(solutionsForThisPeak);
+                        }
+                        //this peak solutions have more hops
+                        else if (firstSolutionThisPeak.Length > currentFirstSolution.Length)
+                        {
+                            solutions.Clear();
+                            solutions.AddRange(solutionsForThisPeak);
+                        }
+                        //this peak solutions have same hops but more depth
+                        else if (firstSolutionThisPeak.Length == currentFirstSolution.Length && firstSolutionThisPeak.Depth > currentFirstSolution.Depth)
+                        {
+                            solutions.Clear();
+                            solutions.AddRange(solutionsForThisPeak);
+                        }
+                        //this peak solutions have same hops and same depth
+                        else if (firstSolutionThisPeak.Length == currentFirstSolution.Length && firstSolutionThisPeak.Depth == currentFirstSolution.Depth)
+                        {
+                            solutions.AddRange(solutionsForThisPeak);
+                        }
                     }
                 }
             }
@@ -91,12 +114,22 @@ namespace Problem1
 
         }
 
-        private static Solution SolveForPeak(int x, int y)
+        private static IEnumerable<Solution> SolveForPeak(int x, int y)
         {
-            return ReturnAllSolutions(x, y)
-                .OrderByDescending(s => s.Path.Count)
-                .ThenByDescending(s => s.Depth)
-                .FirstOrDefault();
+            var allSolutions = ReturnAllSolutions(x, y);
+
+            if (allSolutions.Any())
+            {
+
+                var maxHops = allSolutions.OrderByDescending(s => s.Length).FirstOrDefault().Length;
+                var maxDepth = allSolutions.Where(s => s.Length == maxHops).OrderByDescending(s => s.Depth)
+                    .FirstOrDefault().Depth;
+
+                return ReturnAllSolutions(x, y)
+                    .Where(s => s.Length == maxHops && s.Depth == maxDepth);
+            }
+
+            return Enumerable.Empty<Solution>();
         }
 
         private static IEnumerable<Solution> ReturnAllSolutions(int x, int y)

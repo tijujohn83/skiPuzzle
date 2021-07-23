@@ -1,8 +1,10 @@
-﻿namespace Problem1
+﻿using System.Collections.Generic;
+
+namespace Problem1
 {
     public class DfsSolution : ISolution
     {
-        public Solution Solve()
+        public IEnumerable<Solution> Solve()
         {
             var solution = new Solution();
 
@@ -14,7 +16,7 @@
                 }
             }
 
-            return solution;
+            yield return solution;
         }
 
         private static void SolveForPeaksDfs(int x, int y, ref Solution solution)
