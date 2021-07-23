@@ -20,7 +20,8 @@ namespace Problem1
         public const bool PrintLandscapeMatrix = false;
         public const bool PrintPeaks = false;
         public const bool PrintSolutionPath = false;
-        public const bool RunFindInterestingMatrices = true;
+        public const bool RunFindMatricesWithMultipleSolutions = false;
+        public const bool PerformanceTest = false;
 
         static void Main(string[] args)
         {
@@ -40,13 +41,13 @@ namespace Problem1
 
             PrintToFile(sb.ToString());
 
-            //TestPerformance(landScapeMatrix);
+            TestPerformance(landScapeMatrix);
 
         }
 
         private static void FindMatricesWithMultipleSolutions()
         {
-            if (!RunFindInterestingMatrices) return;
+            if (!RunFindMatricesWithMultipleSolutions) return;
 
             var trial = 1;
             var bestCount = 0;
@@ -82,6 +83,8 @@ namespace Problem1
 
         private static void TestPerformance(LandScapeMatrix landScapeMatrix)
         {
+            if (!PerformanceTest) return;
+
             var iterations = 20;
 
             var watch = System.Diagnostics.Stopwatch.StartNew();
