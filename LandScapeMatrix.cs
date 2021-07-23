@@ -6,7 +6,7 @@ namespace Problem1
     public static class LandScapeMatrix
     {
         public static object LockObj = new object();
-        public const int MatrixLength = 1000;
+        public const int MatrixLength = 100;
         public const bool GenerateRandomMatrix = false;
 
         private static LandScapeCell[,] _landScape;
