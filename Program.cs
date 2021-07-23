@@ -46,7 +46,7 @@ namespace Problem1
 
         private static void FindMatricesWithMultipleSolutions()
         {
-            if(!RunFindInterestingMatrices) return;
+            if (!RunFindInterestingMatrices) return;
 
             var trial = 1;
             var bestCount = 0;
@@ -54,7 +54,7 @@ namespace Problem1
             LandScapeMatrix bestMatrix = null;
             var sb = new StringBuilder();
 
-            Parallel.For((long) 0, 10000000, (_, state) =>
+            Parallel.For((long)0, 10000000, new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount }, (_, state) =>
             {
                 var dfs = new DfsSolution();
                 var landScapeMatrixParallel = new LandScapeMatrix();
@@ -76,7 +76,7 @@ namespace Problem1
                         PrintToFile(sb.ToString());
                     }
                 }
-               
+
             });
         }
 
