@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 //Hops=[693, 603]🡢[694, 603]🡢[694, 604]🡢[695, 604]🡢[695, 605]🡢[694, 605]🡢[694, 606]🡢[693, 606]🡢[692, 606]🡢[692, 605]🡢[691, 605]🡢[691, 606]🡢[690, 606]🡢[689, 606]🡢[689, 607]
 //HopHeights=1422🡢1412🡢1316🡢1304🡢1207🡢1162🡢965🡢945🡢734🡢429🡢332🡢310🡢214🡢143🡢0
 
-namespace Problem1
+namespace SkiPuzzle
 {
     class Program
     {
@@ -18,7 +18,7 @@ namespace Problem1
 
         public const int Space = 2;
         public const bool PrintLandscapeMatrix = false;
-        public const bool PrintPeaks = false;
+        public const bool PrintPeaks = true;
         public const bool PrintSolutionPath = false;
         public const bool RunFindMatricesWithMultipleSolutions = false;
         public const bool PerformanceTest = false;
@@ -71,7 +71,7 @@ namespace Problem1
                         bestMatrix = landScapeMatrixParallel;
                         bestCount = sol.Count;
                         Console.WriteLine(trial + "-" + sol.Count);
-                        File.WriteAllText($"..\\..\\LandScape{bestMatrix.MatrixLength}.txt", bestMatrix.GetSourceString(), Encoding.UTF8);
+                        File.WriteAllText($"LandScape{bestMatrix.MatrixLength}.txt", bestMatrix.GetSourceString(), Encoding.UTF8);
                         sb.Clear();
                         SolutionString(bestMatrix, sol, sb);
                         PrintToFile(sb.ToString());
@@ -135,7 +135,7 @@ namespace Problem1
 
         private static void PrintToFile(string result)
         {
-            File.WriteAllText(@"..\..\solution.txt", result, Encoding.UTF8);
+            File.WriteAllText(@"solution.txt", result, Encoding.UTF8);
         }
 
         private static void SolutionString(LandScapeMatrix landScapeMatrix, List<Solution> solutions, StringBuilder sb)

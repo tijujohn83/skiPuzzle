@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Problem1
+namespace SkiPuzzle
 {
     public static class Utilities
     {
-
         public static string GetCommaSeparatedNumbers(int size)
         {
             var numbers = new List<int>();

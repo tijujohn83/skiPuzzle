@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-namespace Problem1
+namespace SkiPuzzle
 {
     public class LandScapeMatrix
     {
@@ -10,8 +10,8 @@ namespace Problem1
 
         public LandScapeMatrix()
         {
-            MatrixLength = 500;
-            GenerateRandomMatrix = true;
+            MatrixLength = 20;
+            GenerateRandomMatrix = false;
         }
 
         public LandScapeMatrix(int matrixLength, bool generateRandomMatrix)
@@ -31,7 +31,7 @@ namespace Problem1
             if (GenerateRandomMatrix)
                 _sourceString = Utilities.GetCommaSeparatedNumbers(MatrixLength);
             else
-                _sourceString = File.ReadAllText($"..\\..\\LandScape{MatrixLength}.txt");
+                _sourceString = File.ReadAllText($"LandScape{MatrixLength}.txt");
 
             return _sourceString;
         }

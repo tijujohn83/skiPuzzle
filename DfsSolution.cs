@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Problem1
+namespace SkiPuzzle
 {
     public class DfsSolution
     {

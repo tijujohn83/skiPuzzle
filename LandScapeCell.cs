@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 
-namespace Problem1
+namespace SkiPuzzle
 {
     [DebuggerDisplay("{Z}({X},{Y}), {IsPeak.hasValue ? IsPeak.Value.ToString() : null}")]
     public class LandScapeCell

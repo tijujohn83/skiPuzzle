@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace Problem1
+namespace SkiPuzzle
 {
     public  class NonDfsSolution
     {
