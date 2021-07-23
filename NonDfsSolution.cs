@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Problem1
@@ -101,8 +102,6 @@ namespace Problem1
                 }
 
             }
-
-
         }
 
         private static IEnumerable<Solution> SolveForPeak(int x, int y)
