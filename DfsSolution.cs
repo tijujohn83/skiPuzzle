@@ -10,12 +10,12 @@ namespace Problem1
 
             for (var x = 0; x < LandScapeMatrix.MatrixLength; x++)
                 for (var y = 0; y < LandScapeMatrix.MatrixLength; y++)
-                    SolveForPeaksDfs(x, y, solutions);
+                    SolveForCell(x, y, solutions);
 
             return solutions;
         }
 
-        private static void SolveForPeaksDfs(int x, int y, List<Solution> solutions)
+        private static void SolveForCell(int x, int y, List<Solution> solutions)
         {
             var currentCell = LandScapeMatrix.Cells[x, y];
             if (currentCell.IsPeak.HasValue) return;
