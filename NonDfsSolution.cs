@@ -92,10 +92,10 @@ namespace Problem1
             var solutions = new List<Solution>();
             var isLeafCell = true;
 
-            //left
             if (y > 0 && landScape[x, y - 1].Z < landScape[x, y].Z)
             {
-                solutions.AddRange(AllSolutionsFrom(x, y - 1).Select(leaf =>
+                var left = AllSolutionsFrom(x, y - 1);
+                solutions.AddRange(left.Select(leaf =>
                 {
                     leaf.Path.Insert(0, currentCell);
                     return leaf;
@@ -103,10 +103,10 @@ namespace Problem1
                 isLeafCell = false;
             }
 
-            //right
             if (y < LandScapeMatrix.MatrixLength - 1 && landScape[x, y + 1].Z < landScape[x, y].Z)
             {
-                solutions.AddRange(AllSolutionsFrom(x, y + 1).Select(leaf =>
+                var right = AllSolutionsFrom(x, y + 1);
+                solutions.AddRange(right.Select(leaf =>
                 {
                     leaf.Path.Insert(0, currentCell);
                     return leaf;
@@ -114,10 +114,10 @@ namespace Problem1
                 isLeafCell = false;
             }
 
-            //top
             if (x > 0 && landScape[x - 1, y].Z < landScape[x, y].Z)
             {
-                solutions.AddRange(AllSolutionsFrom(x - 1, y).Select(leaf =>
+                var top = AllSolutionsFrom(x - 1, y);
+                solutions.AddRange(top.Select(leaf =>
                 {
                     leaf.Path.Insert(0, currentCell);
                     return leaf;
@@ -125,10 +125,10 @@ namespace Problem1
                 isLeafCell = false;
             }
 
-            //bottom
             if (x < LandScapeMatrix.MatrixLength - 1 && landScape[x + 1, y].Z < landScape[x, y].Z)
             {
-                solutions.AddRange(AllSolutionsFrom(x + 1, y).Select(leaf =>
+                var bottom = AllSolutionsFrom(x + 1, y);
+                solutions.AddRange(bottom.Select(leaf =>
                 {
                     leaf.Path.Insert(0, currentCell);
                     return leaf;

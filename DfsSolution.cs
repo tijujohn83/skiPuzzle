@@ -76,51 +76,47 @@ namespace Problem1
             var currentCell = landScape[x, y];
             var isLeafCell = true;
 
-            //left
             if (y > 0 && landScape[x, y - 1].Z < currentCell.Z)
             {
-                var dfs = Dfs(x, y - 1);
-                dfs.ForEach(sol =>
+                var left = Dfs(x, y - 1);
+                left.ForEach(sol =>
                 {
                     sol.Path.Insert(0, currentCell);
                 });
-                solutions.TakeBestSolutions(dfs);
+                solutions.TakeBestSolutions(left);
                 isLeafCell = false;
             }
 
-            //right
             if (y < LandScapeMatrix.MatrixLength - 1 && landScape[x, y + 1].Z < currentCell.Z)
             {
-                var dfs = Dfs(x, y + 1);
-                dfs.ForEach(sol =>
+                var right = Dfs(x, y + 1);
+                right.ForEach(sol =>
                 {
                     sol.Path.Insert(0, currentCell);
                 });
-                solutions.TakeBestSolutions(dfs);
+                solutions.TakeBestSolutions(right);
                 isLeafCell = false;
             }
 
-            //top
             if (x > 0 && landScape[x - 1, y].Z < currentCell.Z)
             {
-                var dfs = Dfs(x - 1, y);
-                dfs.ForEach(sol =>
+                var top = Dfs(x - 1, y);
+                top.ForEach(sol =>
                 {
                     sol.Path.Insert(0, currentCell);
                 });
-                solutions.TakeBestSolutions(dfs);
+                solutions.TakeBestSolutions(top);
                 isLeafCell = false;
             }
 
-            //bottom
             if (x < LandScapeMatrix.MatrixLength - 1 && landScape[x + 1, y].Z < currentCell.Z)
             {
-                var dfs = Dfs(x + 1, y);
-                dfs.ForEach(sol =>
+                var bottom = Dfs(x + 1, y);
+                bottom.ForEach(sol =>
                 {
                     sol.Path.Insert(0, currentCell);
                 });
-                solutions.TakeBestSolutions(dfs);
+                solutions.TakeBestSolutions(bottom);
                 isLeafCell = false;
             }
 
