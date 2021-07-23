@@ -73,10 +73,10 @@ namespace Problem1
                 var solutionThisPeak = SolveForPeakDfs(x, y);
 
                 //longest then steepest
-                if (solutionThisPeak.Length > solution.Length)
+                if (solutionThisPeak.Hops > solution.Hops)
                 {
                     solution = solutionThisPeak;
-                } else if (solutionThisPeak.Length == solution.Length && solutionThisPeak.Depth > solution.Depth)
+                } else if (solutionThisPeak.Hops == solution.Hops && solutionThisPeak.Depth > solution.Depth)
                 {
                     solution = solutionThisPeak;
                 }
@@ -98,11 +98,11 @@ namespace Problem1
 
             Solution BestSolution(Solution sol1, Solution sol2)
             {
-                if (sol1.Length > sol2.Length)
+                if (sol1.Hops > sol2.Hops)
                 {
                     return sol1;
                 }
-                if (sol1.Length == sol2.Length && sol1.Depth > sol2.Depth)
+                if (sol1.Hops == sol2.Hops && sol1.Depth > sol2.Depth)
                 {
                     return sol1;
                 }

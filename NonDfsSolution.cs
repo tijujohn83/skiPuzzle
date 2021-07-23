@@ -91,19 +91,19 @@ namespace Problem1
                             solutions.AddRange(solutionsForThisPeak);
                         }
                         //this peak solutions have more hops
-                        else if (firstSolutionThisPeak.Length > currentFirstSolution.Length)
+                        else if (firstSolutionThisPeak.Hops > currentFirstSolution.Hops)
                         {
                             solutions.Clear();
                             solutions.AddRange(solutionsForThisPeak);
                         }
                         //this peak solutions have same hops but more depth
-                        else if (firstSolutionThisPeak.Length == currentFirstSolution.Length && firstSolutionThisPeak.Depth > currentFirstSolution.Depth)
+                        else if (firstSolutionThisPeak.Hops == currentFirstSolution.Hops && firstSolutionThisPeak.Depth > currentFirstSolution.Depth)
                         {
                             solutions.Clear();
                             solutions.AddRange(solutionsForThisPeak);
                         }
                         //this peak solutions have same hops and same depth
-                        else if (firstSolutionThisPeak.Length == currentFirstSolution.Length && firstSolutionThisPeak.Depth == currentFirstSolution.Depth)
+                        else if (firstSolutionThisPeak.Hops == currentFirstSolution.Hops && firstSolutionThisPeak.Depth == currentFirstSolution.Depth)
                         {
                             solutions.AddRange(solutionsForThisPeak);
                         }
@@ -121,12 +121,12 @@ namespace Problem1
             if (allSolutions.Any())
             {
 
-                var maxHops = allSolutions.OrderByDescending(s => s.Length).FirstOrDefault().Length;
-                var maxDepth = allSolutions.Where(s => s.Length == maxHops).OrderByDescending(s => s.Depth)
+                var maxHops = allSolutions.OrderByDescending(s => s.Hops).FirstOrDefault().Hops;
+                var maxDepth = allSolutions.Where(s => s.Hops == maxHops).OrderByDescending(s => s.Depth)
                     .FirstOrDefault().Depth;
 
                 return ReturnAllSolutions(x, y)
-                    .Where(s => s.Length == maxHops && s.Depth == maxDepth);
+                    .Where(s => s.Hops == maxHops && s.Depth == maxDepth);
             }
 
             return Enumerable.Empty<Solution>();
