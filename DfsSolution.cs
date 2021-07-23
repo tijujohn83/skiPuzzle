@@ -23,7 +23,6 @@ namespace Problem1
             var landScape = LandScapeMatrix.Cells;
             var currentCell = landScape[x, y];
             var solutions = new List<Solution>();
-
             var isLeafCell = true;
 
             if (y > 0 && landScape[x, y - 1].Z < currentCell.Z)
