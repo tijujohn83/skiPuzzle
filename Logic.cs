@@ -5,7 +5,7 @@ namespace Problem1
 {
     public static class Logic
     {
-        public static void TakeBestSolutions(this List<Solution> currentSolutions, List<Solution> newSolutions)
+        public static void Merge(this List<Solution> currentSolutions, List<Solution> newSolutions)
         {
             // take any because all currentSolutions in the top set will have same number of hops and depth
             var firstNewSolution = newSolutions.FirstOrDefault();
@@ -38,6 +38,17 @@ namespace Problem1
 
             }
 
+        }
+
+        public static List<Solution> FindSolutions(this List<Solution> possibleSolutions)
+        {
+            if (!possibleSolutions.Any()) return possibleSolutions;
+
+            var maxHops = possibleSolutions.OrderByDescending(s => s.Hops).FirstOrDefault()?.Hops ?? 0;
+            var maxDepth = possibleSolutions.Where(s => s.Hops == maxHops).OrderByDescending(s => s.Depth)
+                .FirstOrDefault()?.Depth ?? 0;
+
+            return possibleSolutions.Where(s => s.Hops == maxHops && s.Depth == maxDepth).ToList();
         }
     }
 }

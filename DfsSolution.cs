@@ -13,7 +13,7 @@ namespace Problem1
             for (var x = 0; x < LandScapeMatrix.MatrixLength; x++)
                 for (var y = 0; y < LandScapeMatrix.MatrixLength; y++)
                     if (!LandScapeMatrix.Cells[x, y].IsPeak.HasValue)
-                        _solutions.TakeBestSolutions(Dfs(x, y));
+                        _solutions.Merge(Dfs(x, y));
 
             return _solutions;
         }
@@ -33,7 +33,7 @@ namespace Problem1
                 {
                     sol.Path.Insert(0, currentCell);
                 });
-                solutions.TakeBestSolutions(left);
+                solutions.Merge(left);
                 isLeafCell = false;
             }
 
@@ -45,7 +45,7 @@ namespace Problem1
                 {
                     sol.Path.Insert(0, currentCell);
                 });
-                solutions.TakeBestSolutions(right);
+                solutions.Merge(right);
                 isLeafCell = false;
             }
 
@@ -57,7 +57,7 @@ namespace Problem1
                 {
                     sol.Path.Insert(0, currentCell);
                 });
-                solutions.TakeBestSolutions(top);
+                solutions.Merge(top);
                 isLeafCell = false;
             }
 
@@ -69,7 +69,7 @@ namespace Problem1
                 {
                     sol.Path.Insert(0, currentCell);
                 });
-                solutions.TakeBestSolutions(bottom);
+                solutions.Merge(bottom);
                 isLeafCell = false;
             }
 

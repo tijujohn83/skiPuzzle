@@ -14,17 +14,16 @@ namespace Problem1
             for (var x = 0; x < LandScapeMatrix.MatrixLength; x++)
                 for (var y = 0; y < LandScapeMatrix.MatrixLength; y++)
                     if (!LandScapeMatrix.Cells[x, y].IsPeak.HasValue)
-                        _solutions.TakeBestSolutions(NonDfs(x, y));
+                        _solutions.Merge(NonDfs(x, y));
 
             return _solutions;
         }
-        
+
         private static List<Solution> NonDfs(int x, int y)
         {
             var landScape = LandScapeMatrix.Cells;
             var currentCell = LandScapeMatrix.Cells[x, y];
             var possibleSolutions = new List<Solution>();
-            var solutions = new List<Solution>();
             var isLeafCell = true;
 
             if (y > 0 && landScape[x, y - 1].Z < landScape[x, y].Z)
@@ -78,17 +77,7 @@ namespace Problem1
             if (isLeafCell)
                 possibleSolutions.Add(new Solution { Path = new List<LandScapeCell> { currentCell } });
 
-
-            if (possibleSolutions.Any())
-            {
-                var maxHops = possibleSolutions.OrderByDescending(s => s.Hops).FirstOrDefault()?.Hops ?? 0;
-                var maxDepth = possibleSolutions.Where(s => s.Hops == maxHops).OrderByDescending(s => s.Depth)
-                    .FirstOrDefault()?.Depth ?? 0;
-
-                solutions.AddRange(possibleSolutions.Where(s => s.Hops == maxHops && s.Depth == maxDepth));
-            }
-
-            return solutions;
+            return possibleSolutions.FindSolutions();
         }
     }
 }
