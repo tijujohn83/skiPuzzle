@@ -5,6 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using SkiPuzzle.Model;
+using SkiPuzzle.Solutions;
 
 //Answer for LandScape1000_original.txt: Hops=15, Depth=1422
 //Hops=[693, 603]🡢[694, 603]🡢[694, 604]🡢[695, 604]🡢[695, 605]🡢[694, 605]🡢[694, 606]🡢[693, 606]🡢[692, 606]🡢[692, 605]🡢[691, 605]🡢[691, 606]🡢[690, 606]🡢[689, 606]🡢[689, 607]
@@ -37,12 +39,13 @@ namespace SkiPuzzle
 
             sb.AppendLine(nameof(DfsSolution));
             SolutionString(landScapeMatrix, new DfsSolution().Solve(landScapeMatrix), sb);
+            landScapeMatrix.ResetMatrix();
+
+
 
 
             PrintToFile(sb.ToString());
-
             TestPerformance(landScapeMatrix);
-
         }
 
         private static void FindMatricesWithMultipleSolutions()

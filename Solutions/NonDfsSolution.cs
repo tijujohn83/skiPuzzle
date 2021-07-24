@@ -1,9 +1,12 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
+using skiPuzzle.Solutions;
+using SkiPuzzle.Model;
+using SkiPuzzle.Utils;
 
-namespace SkiPuzzle
+namespace SkiPuzzle.Solutions
 {
-    public  class NonDfsSolution
+    public  class NonDfsSolution : ISolution
     {
         private List<Solution> _solutions;
         private LandScapeMatrix _landScapeMatrix;

@@ -1,7 +1,7 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
-namespace SkiPuzzle
+namespace SkiPuzzle.Utils
 {
     public static class Utilities
     {

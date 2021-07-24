@@ -1,7 +1,8 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
+using SkiPuzzle.Model;
 
-namespace SkiPuzzle
+namespace SkiPuzzle.Utils
 {
     public static class Logic
     {
