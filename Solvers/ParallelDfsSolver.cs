@@ -1,4 +1,7 @@
+using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using skiPuzzle.Solvers;
 using SkiPuzzle.Model;
 using SkiPuzzle.Utils;
@@ -12,15 +15,30 @@ namespace SkiPuzzle.Solvers
 
         public List<Solution> Solve(LandScapeMatrix landScapeMatrix)
         {
-            _solutions = new List<Solution>();
+            var finalSolutions1 = new List<Solution>();
+            var finalSolutions2 = new List<Solution>();
+
             _landScapeMatrix = landScapeMatrix;
 
-            for (var x = 0; x < _landScapeMatrix.MatrixLength; x++)
-                for (var y = 0; y < _landScapeMatrix.MatrixLength; y++)
-                    if (!_landScapeMatrix.Cells[x, y].IsPeak.HasValue)
-                        _solutions.Merge(Dfs(x, y));
+            var task1 = Task.Run(() =>
+            {
+                for (int x = 0; x < _landScapeMatrix.MatrixLength / 2; x++)
+                    for (int y = 0; y < _landScapeMatrix.MatrixLength; y++)
+                        finalSolutions1.Merge(Dfs(x, y));
 
-            return _solutions;
+            });
+
+            var task2 = Task.Run(() =>
+            {
+                for (int x = _landScapeMatrix.MatrixLength / 2; x < _landScapeMatrix.MatrixLength; x++)
+                    for (int y = 0; y < _landScapeMatrix.MatrixLength; y++)
+                        finalSolutions2.Merge(Dfs(x, y));
+            });
+
+            Task.WaitAll(new Task[] { task1, task2 });
+            finalSolutions1.Merge(finalSolutions2);
+
+            return finalSolutions1;
         }
 
         private List<Solution> Dfs(int x, int y)
@@ -87,7 +105,6 @@ namespace SkiPuzzle.Solvers
 
             return solutions;
         }
-
 
     }
 }

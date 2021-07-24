@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Text;
 using SkiPuzzle.Utils;
 
 namespace SkiPuzzle.Model
@@ -11,14 +12,16 @@ namespace SkiPuzzle.Model
 
         public LandScapeMatrix()
         {
-            MatrixLength = 20;
+            MatrixLength = 1000;
             GenerateRandomMatrix = false;
+            Init();
         }
 
         public LandScapeMatrix(int matrixLength, bool generateRandomMatrix)
         {
             MatrixLength = matrixLength;
             GenerateRandomMatrix = generateRandomMatrix;
+            Init();
         }
 
         private LandScapeCell[,] _landScape;
@@ -32,49 +35,57 @@ namespace SkiPuzzle.Model
             if (GenerateRandomMatrix)
                 _sourceString = Utilities.GetCommaSeparatedNumbers(MatrixLength);
             else
-                _sourceString = File.ReadAllText($"LandScape{MatrixLength}.txt");
+            {
+                if (File.Exists($"LandScape{MatrixLength}.txt"))
+                    _sourceString = File.ReadAllText($"LandScape{MatrixLength}.txt");
+                else
+                {
+                    _sourceString = Utilities.GetCommaSeparatedNumbers(MatrixLength);
+                    File.WriteAllText($"LandScape{MatrixLength}.txt", _sourceString, Encoding.UTF8);
+                }
+            }
 
             return _sourceString;
         }
 
         public void ResetMatrix()
         {
-            _landScape = null;
+            Init();
         }
 
         public void ResetMatrixData()
         {
-            _landScape = null;
             _sourceString = null;
+            Init();
+        }
+
+        private void Init()
+        {
+            var input = GetSourceString();
+
+            _landScape = new LandScapeCell[MatrixLength, MatrixLength];
+            int row = 0, col = 0;
+
+            foreach (var item in input.Split(','))
+            {
+                _landScape[row, col] = new LandScapeCell(row, col, Convert.ToInt32(item));
+
+                col++;
+                if (col == MatrixLength)
+                {
+                    row++;
+                    col = 0;
+                }
+
+                if (row == MatrixLength)
+                    break;
+            }
         }
 
         public LandScapeCell[,] Cells
         {
             get
             {
-                if (_landScape != null)
-                    return _landScape;
-
-                var input = GetSourceString();
-
-                _landScape = new LandScapeCell[MatrixLength, MatrixLength];
-                int row = 0, col = 0;
-
-                foreach (var item in input.Split(','))
-                {
-                    _landScape[row, col] = new LandScapeCell(row, col, Convert.ToInt32(item));
-
-                    col++;
-                    if (col == MatrixLength)
-                    {
-                        row++;
-                        col = 0;
-                    }
-
-                    if (row == MatrixLength)
-                        break;
-                }
-
                 return _landScape;
             }
         }

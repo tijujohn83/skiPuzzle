@@ -36,7 +36,6 @@ namespace SkiPuzzle.Utils
                 {
                     currentSolutions.AddRange(newSolutions);
                 }
-
             }
 
         }

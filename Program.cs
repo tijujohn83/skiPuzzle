@@ -18,40 +18,58 @@ namespace SkiPuzzle
     {
         private static readonly object Lock = new object();
 
-        public const int Space = 2;
-        public const bool PrintLandscapeMatrix = false;
-        public const bool PrintPeaks = true;
-        public const bool PrintSolutionPath = false;
-        public const bool RunFindMatricesWithMultipleSolutions = false;
-        public const bool PerformanceTest = false;
+        public static int Space = 2;
+        public static bool PrintInputMatrix = false;
+        public static bool PrintPeaks = false;
+        public static bool PrintSolutionPath = false;
+        public static bool RunFindMatricesWithMultipleSolutions = false;
+        public static bool RunPerformanceTest = false;
 
         static void Main(string[] args)
         {
-            FindMatricesWithMultipleSolutions();
+            if (args.Contains(nameof(PrintInputMatrix)))
+                PrintInputMatrix = true;
+            if (args.Contains(nameof(PrintPeaks)))
+                PrintPeaks = true;
+            if (args.Contains(nameof(PrintSolutionPath)))
+                PrintSolutionPath = true;
+            if (args.Contains(nameof(RunFindMatricesWithMultipleSolutions)))
+                RunFindMatricesWithMultipleSolutions = true;
+            if (args.Contains(nameof(RunPerformanceTest)))
+                RunPerformanceTest = true;
 
             var sb = new StringBuilder();
             var landScapeMatrix = new LandScapeMatrix();
-            PrintMatrix(landScapeMatrix, sb);
 
-            sb.AppendLine(nameof(BruteForceSolver));
-            SolutionString(landScapeMatrix, new BruteForceSolver().Solve(landScapeMatrix), sb);
-            landScapeMatrix.ResetMatrix();
+            if (RunFindMatricesWithMultipleSolutions)
+                FindMatricesWithMultipleSolutions();
 
-            sb.AppendLine(nameof(DfsSolver));
-            SolutionString(landScapeMatrix, new DfsSolver().Solve(landScapeMatrix), sb);
-            landScapeMatrix.ResetMatrix();
+            if (PrintInputMatrix)
+                PrintMatrix(landScapeMatrix, sb);
 
+            if (RunPerformanceTest)
+                TestPerformance(landScapeMatrix, sb);
 
+            if (!RunPerformanceTest)
+            {
+                sb.AppendLine(nameof(BruteForceSolver));
+                SolutionString(landScapeMatrix, new BruteForceSolver().Solve(landScapeMatrix), sb);
+                landScapeMatrix.ResetMatrix();
 
+                sb.AppendLine(nameof(DfsSolver));
+                SolutionString(landScapeMatrix, new DfsSolver().Solve(landScapeMatrix), sb);
+                landScapeMatrix.ResetMatrix();
 
+                sb.AppendLine(nameof(ParallelDfsSolver));
+                SolutionString(landScapeMatrix, new ParallelDfsSolver().Solve(landScapeMatrix), sb);
+                landScapeMatrix.ResetMatrix();
+
+            }
             PrintToFile(sb.ToString());
-            TestPerformance(landScapeMatrix);
         }
 
         private static void FindMatricesWithMultipleSolutions()
         {
-            if (!RunFindMatricesWithMultipleSolutions) return;
-
             var trial = 1;
             var bestCount = 0;
 
@@ -84,14 +102,12 @@ namespace SkiPuzzle
             });
         }
 
-        private static void TestPerformance(LandScapeMatrix landScapeMatrix)
+        private static void TestPerformance(LandScapeMatrix landScapeMatrix, StringBuilder sb)
         {
-            if (!PerformanceTest) return;
-
-            var iterations = 20;
-
+            var iterations = 10;
             var watch = System.Diagnostics.Stopwatch.StartNew();
 
+            Console.WriteLine($"Running {nameof(BruteForceSolver)}");
             watch.Reset();
             watch.Start();
             for (var i = 0; i < iterations; i++)
@@ -99,11 +115,12 @@ namespace SkiPuzzle
                 new BruteForceSolver().Solve(landScapeMatrix);
                 landScapeMatrix.ResetMatrix();
             }
-
             watch.Stop();
-            Console.WriteLine(
-                $"{nameof(BruteForceSolver)} executed {iterations} times. Time = {watch.ElapsedMilliseconds}");
+            Console.WriteLine($"Done {nameof(BruteForceSolver)}");
+            sb.AppendLine($"{nameof(BruteForceSolver)} executed {iterations} times. Time = {watch.ElapsedMilliseconds}");
 
+
+            Console.WriteLine($"Running {nameof(DfsSolver)}");
             watch.Reset();
             watch.Start();
             for (var i = 0; i < iterations; i++)
@@ -111,17 +128,28 @@ namespace SkiPuzzle
                 new DfsSolver().Solve(landScapeMatrix);
                 landScapeMatrix.ResetMatrix();
             }
-
             watch.Stop();
-            Console.WriteLine($"{nameof(DfsSolver)} executed {iterations} times. Time = {watch.ElapsedMilliseconds}");
+            Console.WriteLine($"Done {nameof(DfsSolver)}");
+            sb.AppendLine($"{nameof(DfsSolver)} executed {iterations} times. Time = {watch.ElapsedMilliseconds}");
 
-            Console.ReadKey();
+
+            Console.WriteLine($"Running {nameof(ParallelDfsSolver)}");
+            watch.Reset();
+            watch.Start();
+            for (var i = 0; i < iterations; i++)
+            {
+                new ParallelDfsSolver().Solve(landScapeMatrix);
+                landScapeMatrix.ResetMatrix();
+            }
+            watch.Stop();
+            sb.AppendLine($"{nameof(ParallelDfsSolver)} executed {iterations} times. Time = {watch.ElapsedMilliseconds}");
+            Console.WriteLine($"Done {nameof(ParallelDfsSolver)}");
+
+            sb.AppendLine("----------------------Exiting Test----------------------");
         }
 
         private static void PrintMatrix(LandScapeMatrix landScapeMatrix, StringBuilder sb)
         {
-            if (!PrintLandscapeMatrix) return;
-
             sb.AppendLine("Input");
             for (var x = 0; x < landScapeMatrix.MatrixLength; x++)
             {
@@ -132,7 +160,6 @@ namespace SkiPuzzle
 
                 sb.AppendLine();
             }
-
             sb.AppendLine();
         }
 
@@ -151,7 +178,7 @@ namespace SkiPuzzle
                     for (var y = 0; y < landScapeMatrix.MatrixLength; y++)
                     {
                         var isPeak = !landScapeMatrix.Cells[x, y].IsPeak.HasValue;
-                        sb.Append(isPeak 
+                        sb.Append(isPeak
                                     ? landScapeMatrix.Cells[x, y].Z.ToString().PadLeft(Space).PadRight(Space + 2)
                                     : "●".PadLeft(Space).PadRight(Space + 2));
                     }
@@ -212,11 +239,13 @@ namespace SkiPuzzle
                                         sb.Append($"{start}🡦".PadLeft(Space + 1).PadRight(Space + 3));
                                     else if (next.X > node.X && next.Y < node.Y)
                                         sb.Append($"{start}🡧".PadLeft(Space + 1).PadRight(Space + 3));
-                                } else
+                                }
+                                else
                                 {
                                     sb.Append("@".PadLeft(Space).PadRight(Space + 2));
                                 }
-                            } else
+                            }
+                            else
                             {
                                 sb.Append("●".PadLeft(Space).PadRight(Space + 2));
                             }
