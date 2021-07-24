@@ -1,11 +1,11 @@
 using System.Collections.Generic;
-using skiPuzzle.Solutions;
+using skiPuzzle.Solvers;
 using SkiPuzzle.Model;
 using SkiPuzzle.Utils;
 
-namespace SkiPuzzle.Solutions
+namespace SkiPuzzle.Solvers
 {
-    public class DfsSolution : ISolution
+    public class DfsSolver : ISolver
     {
         private List<Solution> _solutions;
         private LandScapeMatrix _landScapeMatrix;

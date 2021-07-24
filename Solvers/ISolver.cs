@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using SkiPuzzle.Model;
 
-namespace skiPuzzle.Solutions
+namespace skiPuzzle.Solvers
 {
-    public interface ISolution
+    public interface ISolver
     {
         List<Solution> Solve(LandScapeMatrix landScapeMatrix);
     }

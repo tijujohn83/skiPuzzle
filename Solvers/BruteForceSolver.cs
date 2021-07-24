@@ -1,12 +1,12 @@
 using System.Collections.Generic;
 using System.Linq;
-using skiPuzzle.Solutions;
+using skiPuzzle.Solvers;
 using SkiPuzzle.Model;
 using SkiPuzzle.Utils;
 
-namespace SkiPuzzle.Solutions
+namespace SkiPuzzle.Solvers
 {
-    public  class NonDfsSolution : ISolution
+    public  class BruteForceSolver : ISolver
     {
         private List<Solution> _solutions;
         private LandScapeMatrix _landScapeMatrix;

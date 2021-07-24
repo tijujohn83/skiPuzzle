@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using SkiPuzzle.Model;
-using SkiPuzzle.Solutions;
+using SkiPuzzle.Solvers;
 
 //Answer for LandScape1000_original.txt: Hops=15, Depth=1422
 //Hops=[693, 603]🡢[694, 603]🡢[694, 604]🡢[695, 604]🡢[695, 605]🡢[694, 605]🡢[694, 606]🡢[693, 606]🡢[692, 606]🡢[692, 605]🡢[691, 605]🡢[691, 606]🡢[690, 606]🡢[689, 606]🡢[689, 607]
@@ -33,12 +33,12 @@ namespace SkiPuzzle
             var landScapeMatrix = new LandScapeMatrix();
             PrintMatrix(landScapeMatrix, sb);
 
-            sb.AppendLine(nameof(NonDfsSolution));
-            SolutionString(landScapeMatrix, new NonDfsSolution().Solve(landScapeMatrix), sb);
+            sb.AppendLine(nameof(BruteForceSolver));
+            SolutionString(landScapeMatrix, new BruteForceSolver().Solve(landScapeMatrix), sb);
             landScapeMatrix.ResetMatrix();
 
-            sb.AppendLine(nameof(DfsSolution));
-            SolutionString(landScapeMatrix, new DfsSolution().Solve(landScapeMatrix), sb);
+            sb.AppendLine(nameof(DfsSolver));
+            SolutionString(landScapeMatrix, new DfsSolver().Solve(landScapeMatrix), sb);
             landScapeMatrix.ResetMatrix();
 
 
@@ -60,7 +60,7 @@ namespace SkiPuzzle
 
             Parallel.For((long)0, 10000000, new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount }, (_, state) =>
             {
-                var dfs = new DfsSolution();
+                var dfs = new DfsSolver();
                 var landScapeMatrixParallel = new LandScapeMatrix();
 
                 var sol = dfs.Solve(landScapeMatrixParallel);
@@ -96,24 +96,24 @@ namespace SkiPuzzle
             watch.Start();
             for (var i = 0; i < iterations; i++)
             {
-                new NonDfsSolution().Solve(landScapeMatrix);
+                new BruteForceSolver().Solve(landScapeMatrix);
                 landScapeMatrix.ResetMatrix();
             }
 
             watch.Stop();
             Console.WriteLine(
-                $"{nameof(NonDfsSolution)} executed {iterations} times. Time = {watch.ElapsedMilliseconds}");
+                $"{nameof(BruteForceSolver)} executed {iterations} times. Time = {watch.ElapsedMilliseconds}");
 
             watch.Reset();
             watch.Start();
             for (var i = 0; i < iterations; i++)
             {
-                new DfsSolution().Solve(landScapeMatrix);
+                new DfsSolver().Solve(landScapeMatrix);
                 landScapeMatrix.ResetMatrix();
             }
 
             watch.Stop();
-            Console.WriteLine($"{nameof(DfsSolution)} executed {iterations} times. Time = {watch.ElapsedMilliseconds}");
+            Console.WriteLine($"{nameof(DfsSolver)} executed {iterations} times. Time = {watch.ElapsedMilliseconds}");
 
             Console.ReadKey();
         }
